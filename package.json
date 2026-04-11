@@ -1,0 +1,40 @@
+{
+  "name": "@kausalayer/mcp",
+  "version": "1.0.0",
+  "description": "KausaLayer MCP Server - Privacy infrastructure for AI agents on Solana",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "kausalayer-mcp": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "start:http": "node dist/http-server.js",
+    "dev": "ts-node src/index.ts",
+    "dev:http": "ts-node src/http-server.ts",
+    "clean": "rm -rf dist"
+  },
+  "keywords": ["mcp", "solana", "privacy", "kausalayer", "ai-agent"],
+  "author": "KausaLayer",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.1",
+    "@solana/spl-token": "^0.4.13",
+    "@solana/web3.js": "^1.98.0",
+    "better-sqlite3": "^11.8.1",
+    "dotenv": "^16.4.7",
+    "eventsource-parser": "^3.0.1",
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.12",
+    "@types/express": "^5.0.1",
+    "@types/node": "^22.14.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
