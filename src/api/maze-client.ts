@@ -264,4 +264,39 @@ export class MazeApiClient {
   }> {
     return this.request('GET', '/health');
   }
+
+  // ============ DIRECT ROUTE ============
+
+  /**
+   * Create a direct route (A -> maze -> B)
+   */
+  async createRoute(
+    metaAddress: string,
+    amountSol: number,
+    destination: string,
+    complexity: Complexity = 'medium'
+  ): Promise<{
+    success: boolean;
+    route_id: string;
+    deposit_address: string;
+    destination: string;
+    amount_lamports: number;
+    fee_lamports: number;
+    total_deposit: number;
+    expires_at: number;
+    maze_info: {
+      nodes: number;
+      levels: number;
+      estimated_time_seconds: number;
+    };
+  }> {
+    const mazeConfig = this.complexityToConfig(complexity);
+    
+    return this.request('POST', '/route', {
+      meta_address: metaAddress,
+      amount_sol: amountSol,
+      destination,
+      maze_config: mazeConfig,
+    });
+  }
 }

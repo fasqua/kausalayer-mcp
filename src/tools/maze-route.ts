@@ -66,9 +66,9 @@ export async function handleMazeRoute(
   // Get meta_address for API call
   const metaAddress = ApiKeyAuth.getMetaAddress(authContext.walletAddress);
 
-  // For now, maze_route uses create_pocket + immediate sweep setup
-  // TODO: Add direct /route endpoint to Rust backend
-  const response = await apiClient.createPocket(metaAddress, amount_sol, effectiveComplexity);
+  // Use direct route endpoint
+  
+  const response = await apiClient.createRoute(metaAddress, amount_sol, destination, effectiveComplexity);
 
   if (!response.success) {
     throw new Error('Failed to create route');
@@ -89,7 +89,7 @@ export async function handleMazeRoute(
   };
 
   return {
-    route_id: response.pocket_id.replace('pocket_', 'route_'),
+    route_id: response.route_id,
     deposit_address: response.deposit_address,
     amount_required: totalRequired,
     fee_sol: feeSol,
