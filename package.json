@@ -1,6 +1,6 @@
 {
   "name": "kausalayer-mcp",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "KausaLayer MCP Server - Privacy infrastructure for AI agents on Solana",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -15,7 +15,13 @@
     "dev:http": "ts-node src/http-server.ts",
     "clean": "rm -rf dist"
   },
-  "keywords": ["mcp", "solana", "privacy", "kausalayer", "ai-agent"],
+  "keywords": [
+    "mcp",
+    "solana",
+    "privacy",
+    "kausalayer",
+    "ai-agent"
+  ],
   "author": "KausaLayer",
   "license": "Apache-2.0",
   "dependencies": {
