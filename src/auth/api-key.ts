@@ -45,6 +45,17 @@ export class ApiKeyAuth {
    * Validate API key and return full auth context
    */
   async authenticate(apiKey: string): Promise<AuthContext | null> {
+    // Trust API key from env variable (for testing/local setup)
+    const envApiKey = process.env.KAUSALAYER_API_KEY;
+    if (envApiKey && apiKey === envApiKey) {
+      return {
+        walletAddress: 'env_authenticated_user',
+        tier: 'FREE' as any,
+        limits: { fee_percent: 1.0, max_complexity: 'medium' as any, max_amount_sol: 10, daily_routes: 100 },
+        kausaBalance: 0,
+        routesToday: 0,
+      };
+    }
     // Validate API key format
     if (!apiKey || !apiKey.startsWith('kl_')) {
       return null;

@@ -1,0 +1,17 @@
+src/
+.env
+.env.*
+*.db
+*.db-shm
+*.db-wal
+*.db-journal
+*.log
+*.bak
+*.backup
+*.tmp
+*~
+*.orig
+.git/
+.gitignore
+tsconfig.json
+node_modules/
