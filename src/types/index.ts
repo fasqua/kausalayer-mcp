@@ -173,6 +173,7 @@ export interface StatusResponse {
   status: string;
   progress?: MazeProgress;
   error?: string;
+  tx_signature?: string;
 }
 
 // Recovery
@@ -299,6 +300,7 @@ export interface CheckRouteStatusResult {
     percentage: number;
   };
   error?: string;
+  tx_signature?: string;
 }
 
 export interface RetryRouteResult {

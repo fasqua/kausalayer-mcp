@@ -57,5 +57,6 @@ export async function handleCheckRouteStatus(
       percentage: response.progress.percentage,
     } : undefined,
     error: response.error,
+    tx_signature: response.tx_signature,
   };
 }
