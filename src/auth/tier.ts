@@ -4,7 +4,6 @@
  */
 
 import { Connection, PublicKey } from '@solana/web3.js';
-import { getAssociatedTokenAddress, getAccount } from '@solana/spl-token';
 import { Tier, TierLimits, TIER_LIMITS, TIER_THRESHOLDS } from '../types';
 
 // KAUSA token has 6 decimals (pump.fun standard)
@@ -12,10 +11,12 @@ const KAUSA_DECIMALS = 6;
 
 export class TierManager {
   private connection: Connection;
+  private rpcUrl: string;
   private kausaMint: PublicKey;
 
   constructor(rpcUrl: string, kausaMint: string) {
     this.connection = new Connection(rpcUrl, 'confirmed');
+    this.rpcUrl = rpcUrl;
     this.kausaMint = new PublicKey(kausaMint);
   }
 
@@ -24,18 +25,27 @@ export class TierManager {
    */
   async getKausaBalance(walletAddress: string): Promise<number> {
     try {
-      const wallet = new PublicKey(walletAddress);
-      const ata = await getAssociatedTokenAddress(this.kausaMint, wallet);
-      
-      const account = await getAccount(this.connection, ata);
-      const balance = Number(account.amount) / Math.pow(10, KAUSA_DECIMALS);
-      
-      return balance;
-    } catch (error: any) {
-      // Token account doesn't exist = 0 balance
-      if (error.name === 'TokenAccountNotFoundError') {
-        return 0;
+      const response = await fetch(this.rpcUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          jsonrpc: '2.0',
+          id: 1,
+          method: 'getTokenAccountsByOwner',
+          params: [
+            walletAddress,
+            { mint: this.kausaMint.toBase58() },
+            { encoding: 'jsonParsed' }
+          ]
+        })
+      });
+      const data: any = await response.json();
+      if (data.result?.value?.length > 0) {
+        const tokenAmount = data.result.value[0].account.data.parsed.info.tokenAmount;
+        return Number(tokenAmount.uiAmount);
       }
+      return 0;
+    } catch (error: any) {
       console.error('Error fetching KAUSA balance:', error.message);
       return 0;
     }

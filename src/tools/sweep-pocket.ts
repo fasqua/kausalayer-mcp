@@ -50,6 +50,16 @@ export async function handleSweepPocket(
   // Determine complexity (default to max allowed by tier)
   const effectiveComplexity: Complexity = complexity || authContext.limits.max_complexity;
 
+  // Validate daily route limit
+  if (!auth.canMakeRoute(authContext)) {
+    throw new Error(`Daily route limit reached (${authContext.limits.daily_routes}/day). Upgrade tier for more routes.`);
+  }
+
+  // Validate complexity
+  if (complexity && !auth.canUseComplexity(authContext.tier, complexity)) {
+    throw new Error(`Complexity '${complexity}' not available for ${authContext.tier} tier. Max: ${authContext.limits.max_complexity}.`);
+  }
+
   // Get meta_address for API call
   const metaAddress = ApiKeyAuth.getMetaAddress(authContext.walletAddress);
 

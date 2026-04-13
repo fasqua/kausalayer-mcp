@@ -137,4 +137,11 @@ export class ApiKeyAuth {
   static getMetaAddress(walletAddress: string): string {
     return crypto.createHash('sha256').update(walletAddress).digest('hex');
   }
+
+  /**
+   * Check if complexity is allowed for tier
+   */
+  canUseComplexity(tier: string, complexity: string): boolean {
+    return this.tierManager.canUseComplexity(tier as any, complexity as any);
+  }
 }
