@@ -1,82 +1,121 @@
-# KausaLayer MCP Server
+# @kausalayer/mcp
 
 Privacy infrastructure for AI agents on Solana. Route SOL privately via dynamic maze routing.
 
-> ⚠️ **IN DEVELOPMENT** - This project is under active development and not yet ready for production use. APIs may change without notice.
+## Installation
 
-## Overview
+```bash
+npm install -g @kausalayer/mcp
+```
 
-KausaLayer MCP exposes privacy tools via the Model Context Protocol (MCP), enabling AI agents like Claude, Cursor, and custom trading bots to perform private Solana transactions.
+Or use directly with npx:
+```bash
+npx @kausalayer/mcp
+```
 
-## Features
+## Quick Start
 
-- **maze_route** - Send SOL privately via dynamic maze routing (A → maze → B)
-- **create_pocket** - Create stealth wallets funded via maze routing
-- **sweep_pocket** - Withdraw funds from pockets via maze routing
-- **export_pocket_key** - Export private keys for Phantom/Solflare import
-- **estimate_fee** - Estimate fees before executing
+### 1. Get API Key
 
-## API Endpoints
+Visit https://kausalayer.com/mcp, connect your wallet, and generate an API key.
 
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/health` | GET | Health check |
-| `/tools` | GET | List available MCP tools |
-| `/register` | POST | Register API key |
-| `/call` | POST | Execute a tool |
-| `/tier` | GET | Get user tier info |
+### 2. Configure Your Client
 
-## Authentication
+#### Claude Desktop
 
-1. Sign message with your Solana wallet: `KausaLayer MCP Access\nWallet: <pubkey>\nTimestamp: <unix>`
-2. POST to `/register` with `wallet_address` and `signature`
-3. Receive API key (format: `kl_xxxxxxxx`)
-4. Include `x-api-key` header in subsequent requests
+Edit `claude_desktop_config.json`:
+
+**Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
+**macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`
+
+```json
+{
+  "mcpServers": {
+    "kausalayer": {
+      "command": "npx",
+      "args": ["-y", "@kausalayer/mcp"],
+      "env": {
+        "KAUSALAYER_API_KEY": "kl_your_api_key_here"
+      }
+    }
+  }
+}
+```
+
+#### Cursor
+
+Add to MCP settings:
+```json
+{
+  "kausalayer": {
+    "command": "npx",
+    "args": ["-y", "@kausalayer/mcp"],
+    "env": {
+      "KAUSALAYER_API_KEY": "kl_your_api_key_here"
+    }
+  }
+}
+```
+
+### 3. Start Using
+
+Ask your AI agent:
+- "Create a stealth pocket with 0.1 SOL"
+- "Route 0.5 SOL to [destination address]"
+- "List my pockets"
+- "Sweep pocket [pocket_id] to [destination]"
+
+## Available Tools
+
+| Tool | Description |
+|------|-------------|
+| `create_pocket` | Create a stealth wallet funded via maze routing |
+| `list_pockets` | List all your stealth pockets |
+| `get_pocket_info` | Get details about a specific pocket |
+| `maze_route` | Route SOL privately (A → maze → B) |
+| `sweep_pocket` | Withdraw funds from pocket via maze routing |
+| `check_route_status` | Check status of a route |
+| `export_pocket_key` | Export private key for wallet import |
+| `estimate_fee` | Estimate fees before executing |
+| `retry_route` | Retry a failed route |
+| `recover_route` | Recover funds from stuck route |
 
 ## Tier System
 
-| Tier | KAUSA Required | Fee | Daily Routes |
-|------|---------------|-----|--------------|
-| FREE | 0 | 1.0% | 10 |
-| BASIC | 1,000 | 0.5% | 50 |
-| PRO | 10,000 | 0.25% | 200 |
-| ENTERPRISE | 100,000 | 0.1% | Unlimited |
+Hold $KAUSA tokens to unlock lower fees and higher limits:
 
-Hold $KAUSA tokens to unlock lower fees and higher limits.
+| Tier | KAUSA Required | Fee | Daily Routes | Max SOL |
+|------|---------------|-----|--------------|---------|
+| FREE | 0 | 1.0% | 10 | 1 |
+| BASIC | 1,000 | 0.5% | 50 | 10 |
+| PRO | 10,000 | 0.25% | 200 | 100 |
+| ENTERPRISE | 100,000 | 0.1% | Unlimited | Unlimited |
 
 **KAUSA Token:** `BWXSNRBKMviG68MqavyssnzDq4qSArcN7eNYjqEfpump`
 
-## Usage Example
+## Environment Variables
 
-```bash
-# Register API key
-curl -X POST https://mcp.kausalayer.com/register \
-  -H "Content-Type: application/json" \
-  -d '{"wallet_address": "YOUR_PUBKEY", "signature": "YOUR_SIGNATURE"}'
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `KAUSALAYER_API_KEY` | Yes | Your API key from kausalayer.com/mcp |
+| `SOLANA_RPC_URL` | No | Custom RPC endpoint (default: Helius) |
 
-# Estimate fee
-curl -X POST https://mcp.kausalayer.com/call \
-  -H "Content-Type: application/json" \
-  -H "x-api-key: kl_your_api_key" \
-  -d '{"tool": "estimate_fee", "arguments": {"amount_sol": 1.0, "operation": "route"}}'
+## How It Works
 
-# Create private route
-curl -X POST https://mcp.kausalayer.com/call \
-  -H "Content-Type: application/json" \
-  -H "x-api-key: kl_your_api_key" \
-  -d '{"tool": "maze_route", "arguments": {"destination": "DEST_PUBKEY", "amount_sol": 1.0}}'
-```
+KausaLayer uses dynamic maze routing to break the on-chain link between sender and receiver:
 
-## MCP Client Integration
-
-> 🚧 **Coming Soon** - npm package will be published for easy integration with Claude Desktop, Cursor, and other MCP-compatible clients.
-
-## License
-
-Apache 2.0
+1. **Create Pocket**: Funds are routed through a randomly generated maze of intermediate wallets
+2. **Stealth Address**: Each pocket has a unique stealth address derived from your wallet
+3. **Maze Routing**: Transactions are split and delayed using golden ratio splits and Fibonacci timing
+4. **Privacy**: No direct on-chain link between source and destination
 
 ## Links
 
 - Website: https://kausalayer.com
-- Docs: https://docs.kausalayer.com
+- API Key: https://kausalayer.com/mcp
+- GitHub: https://github.com/fasqua/kausalayer-mcp
 - Twitter: https://x.com/kausalayer
+
+## License
+
+Apache 2.0
