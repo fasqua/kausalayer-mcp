@@ -45,16 +45,29 @@ export class ApiKeyAuth {
    * Validate API key and return full auth context
    */
   async authenticate(apiKey: string): Promise<AuthContext | null> {
-    // Trust API key from env variable (for testing/local setup)
-    const envApiKey = process.env.KAUSALAYER_API_KEY;
-    if (envApiKey && apiKey === envApiKey) {
-      return {
-        walletAddress: 'env_authenticated_user',
-        tier: 'FREE' as any,
-        limits: { fee_percent: 1.0, max_complexity: 'medium' as any, max_amount_sol: 10, daily_routes: 100 },
-        kausaBalance: 0,
-        routesToday: 0,
-      };
+    // Validate API key via backend
+    const mazeApiUrl = process.env.MAZE_API_URL || 'http://localhost:3033';
+    try {
+      const response = await fetch(`${mazeApiUrl}/mcp/validate-key`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ api_key: apiKey }),
+      });
+      const data = await response.json() as { valid: boolean; wallet_address?: string };
+      if (data.valid && data.wallet_address) {
+        // Get tier info from TierManager
+        const tierInfo = await this.tierManager.getWalletTier(data.wallet_address);
+        const usage = this.db.getUsage(data.wallet_address);
+        return {
+          walletAddress: data.wallet_address,
+          tier: tierInfo.tier,
+          limits: tierInfo.limits,
+          kausaBalance: tierInfo.kausaBalance,
+          routesToday: usage.routes_today,
+        };
+      }
+    } catch (error: any) {
+      console.error('Backend validation failed:', error.message);
     }
     // Validate API key format
     if (!apiKey || !apiKey.startsWith('kl_')) {
