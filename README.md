@@ -9,6 +9,7 @@ npm install -g @kausalayer/mcp
 ```
 
 Or use directly with npx:
+
 ```bash
 npx @kausalayer/mcp
 ```
@@ -45,6 +46,7 @@ Edit `claude_desktop_config.json`:
 #### Cursor
 
 Add to MCP settings:
+
 ```json
 {
   "kausalayer": {
@@ -64,6 +66,8 @@ Ask your AI agent:
 - "Route 0.5 SOL to [destination address]"
 - "List my pockets"
 - "Sweep pocket [pocket_id] to [destination]"
+- "Save my main wallet to slot 1"
+- "Show my saved wallets"
 
 ## Available Tools
 
@@ -79,6 +83,10 @@ Ask your AI agent:
 | `estimate_fee` | Estimate fees before executing |
 | `retry_route` | Retry a failed route |
 | `recover_route` | Recover funds from stuck route |
+| `list_saved_wallets` | List saved destination wallets (slots 1-5) |
+| `add_saved_wallet` | Save a destination wallet to a slot |
+| `remove_saved_wallet` | Remove a saved wallet by slot |
+| `delete_pocket` | Delete an empty pocket |
 
 ## Tier System
 
