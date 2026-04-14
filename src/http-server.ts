@@ -258,7 +258,7 @@ app.post('/call', async (req: Request, res: Response) => {
         result = await handleGetPocketTransactions(args, authContext, apiClient);
         break;
       case 'get_tier_info':
-        result = await handleGetTierInfo(args, authContext, apiClient);
+        result = await handleGetTierInfo(args, authContext, apiClient, tierManager);
         break;
       default:
         return res.status(400).json({

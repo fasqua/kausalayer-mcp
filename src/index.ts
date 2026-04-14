@@ -234,7 +234,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         result = await handleGetPocketTransactions(args as any, authContext, apiClient);
         break;
       case 'get_tier_info':
-        result = await handleGetTierInfo(args as any, authContext, apiClient);
+        result = await handleGetTierInfo(args as any, authContext, apiClient, tierManager);
         break;
       default:
         return {
