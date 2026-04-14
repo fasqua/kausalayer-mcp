@@ -50,7 +50,7 @@ const config = {
 
 // Initialize
 const db = new MCPDatabase(config.mcpDbPath);
-const tierManager = new TierManager(config.solanaRpcUrl, config.kausaMint);
+const tierManager = new TierManager(config.solanaRpcUrl, config.kausaMint, config.mazeApiUrl);
 const auth = new ApiKeyAuth(db, tierManager);
 const apiClient = new MazeApiClient(config.mazeApiUrl);
 

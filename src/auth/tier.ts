@@ -1,29 +1,73 @@
 /**
  * KausaLayer MCP - Tier Module
- * Check KAUSA token balance and determine user tier
+ * Check token balances and determine user tier
+ * Supports multiple tokens via dynamic config from backend
  */
-
 import { Connection, PublicKey } from '@solana/web3.js';
 import { Tier, TierLimits, TIER_LIMITS, TIER_THRESHOLDS } from '../types';
 
-// KAUSA token has 6 decimals (pump.fun standard)
-const KAUSA_DECIMALS = 6;
+// Config cache
+interface TokenConfig {
+  symbol: string;
+  mint: string;
+  thresholds: {
+    BASIC: number;
+    PRO: number;
+    ENTERPRISE: number;
+  };
+}
+
+interface TierConfig {
+  tokens: TokenConfig[];
+  limits: Record<string, TierLimits>;
+}
 
 export class TierManager {
   private connection: Connection;
   private rpcUrl: string;
   private kausaMint: PublicKey;
+  private mazeApiUrl: string;
+  private configCache: TierConfig | null = null;
+  private configCacheTime: number = 0;
+  private readonly CONFIG_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
 
-  constructor(rpcUrl: string, kausaMint: string) {
+  constructor(rpcUrl: string, kausaMint: string, mazeApiUrl?: string) {
     this.connection = new Connection(rpcUrl, 'confirmed');
     this.rpcUrl = rpcUrl;
     this.kausaMint = new PublicKey(kausaMint);
+    this.mazeApiUrl = mazeApiUrl || 'http://localhost:3033';
   }
 
   /**
-   * Get KAUSA token balance for a wallet
+   * Fetch tier config from backend
    */
-  async getKausaBalance(walletAddress: string): Promise<number> {
+  async fetchTierConfig(): Promise<TierConfig | null> {
+    // Return cached config if still valid
+    const now = Date.now();
+    if (this.configCache && (now - this.configCacheTime) < this.CONFIG_CACHE_TTL) {
+      return this.configCache;
+    }
+
+    try {
+      const response = await fetch(`${this.mazeApiUrl}/tier-config`);
+      if (!response.ok) {
+        console.error('Failed to fetch tier config:', response.status);
+        return null;
+      }
+      const config = await response.json() as TierConfig;
+      this.configCache = config;
+      this.configCacheTime = now;
+      return config;
+    } catch (error: any) {
+      console.error('Error fetching tier config:', error.message);
+      return null;
+    }
+  }
+
+  /**
+   * Get token balance for a wallet
+   */
+  async getTokenBalance(walletAddress: string, mintAddress: string): Promise<number> {
     try {
       const response = await fetch(this.rpcUrl, {
         method: 'POST',
@@ -34,11 +78,12 @@ export class TierManager {
           method: 'getTokenAccountsByOwner',
           params: [
             walletAddress,
-            { mint: this.kausaMint.toBase58() },
+            { mint: mintAddress },
             { encoding: 'jsonParsed' }
           ]
         })
       });
+
       const data: any = await response.json();
       if (data.result?.value?.length > 0) {
         const tokenAmount = data.result.value[0].account.data.parsed.info.tokenAmount;
@@ -46,13 +91,36 @@ export class TierManager {
       }
       return 0;
     } catch (error: any) {
-      console.error('Error fetching KAUSA balance:', error.message);
+      console.error('Error fetching token balance:', error.message);
       return 0;
     }
   }
 
   /**
-   * Determine tier based on KAUSA balance
+   * Get KAUSA token balance for a wallet (backward compatible)
+   */
+  async getKausaBalance(walletAddress: string): Promise<number> {
+    return this.getTokenBalance(walletAddress, this.kausaMint.toBase58());
+  }
+
+  /**
+   * Determine tier based on token balance and thresholds
+   */
+  determineTierFromBalance(balance: number, thresholds: { BASIC: number; PRO: number; ENTERPRISE: number }): Tier {
+    if (balance >= thresholds.ENTERPRISE) {
+      return Tier.ENTERPRISE;
+    }
+    if (balance >= thresholds.PRO) {
+      return Tier.PRO;
+    }
+    if (balance >= thresholds.BASIC) {
+      return Tier.BASIC;
+    }
+    return Tier.FREE;
+  }
+
+  /**
+   * Determine tier based on KAUSA balance (backward compatible)
    */
   determineTier(kausaBalance: number): Tier {
     if (kausaBalance >= TIER_THRESHOLDS[Tier.ENTERPRISE]) {
@@ -75,18 +143,49 @@ export class TierManager {
   }
 
   /**
-   * Get full tier info for a wallet
+   * Compare tiers and return the higher one
+   */
+  private compareTiers(tier1: Tier, tier2: Tier): Tier {
+    const tierOrder = [Tier.FREE, Tier.BASIC, Tier.PRO, Tier.ENTERPRISE];
+    const index1 = tierOrder.indexOf(tier1);
+    const index2 = tierOrder.indexOf(tier2);
+    return index1 >= index2 ? tier1 : tier2;
+  }
+
+  /**
+   * Get full tier info for a wallet (supports multiple tokens)
    */
   async getWalletTier(walletAddress: string): Promise<{
     tier: Tier;
     limits: TierLimits;
     kausaBalance: number;
   }> {
-    const kausaBalance = await this.getKausaBalance(walletAddress);
-    const tier = this.determineTier(kausaBalance);
-    const limits = this.getTierLimits(tier);
+    // Try to fetch dynamic config
+    const config = await this.fetchTierConfig();
 
-    return { tier, limits, kausaBalance };
+    let highestTier: Tier = Tier.FREE;
+    let kausaBalance = 0;
+
+    if (config && config.tokens && config.tokens.length > 0) {
+      // Check balance for each token in config
+      for (const token of config.tokens) {
+        const balance = await this.getTokenBalance(walletAddress, token.mint);
+        const tier = this.determineTierFromBalance(balance, token.thresholds);
+        highestTier = this.compareTiers(highestTier, tier);
+
+        // Track KAUSA balance specifically for backward compatibility
+        if (token.symbol === 'KAUSA') {
+          kausaBalance = balance;
+        }
+      }
+    } else {
+      // Fallback to original KAUSA-only logic
+      kausaBalance = await this.getKausaBalance(walletAddress);
+      highestTier = this.determineTier(kausaBalance);
+    }
+
+    const limits = this.getTierLimits(highestTier);
+    return { tier: highestTier, limits, kausaBalance };
   }
 
   /**
