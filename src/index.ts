@@ -39,6 +39,15 @@ import {
   handleRecoverRoute,
   estimateFeeTool,
   handleEstimateFee,
+  // Phase 0 - Wallet & Delete Tools
+  listSavedWalletsTool,
+  handleListSavedWallets,
+  addSavedWalletTool,
+  handleAddSavedWallet,
+  removeSavedWalletTool,
+  handleRemoveSavedWallet,
+  deletePocketTool,
+  handleDeletePocket,
 } from './tools';
 
 // Load environment variables
@@ -71,6 +80,11 @@ const tools = [
   retryRouteTool,
   recoverRouteTool,
   estimateFeeTool,
+  // Phase 0 - Wallet & Delete Tools
+  listSavedWalletsTool,
+  addSavedWalletTool,
+  removeSavedWalletTool,
+  deletePocketTool,
 ];
 
 // Create MCP server
@@ -166,6 +180,19 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         break;
       case 'estimate_fee':
         result = await handleEstimateFee(args as any, authContext);
+        break;
+      // Phase 0 - Wallet & Delete Tools
+      case 'list_saved_wallets':
+        result = await handleListSavedWallets(args as any, authContext, apiClient);
+        break;
+      case 'add_saved_wallet':
+        result = await handleAddSavedWallet(args as any, authContext, apiClient);
+        break;
+      case 'remove_saved_wallet':
+        result = await handleRemoveSavedWallet(args as any, authContext, apiClient);
+        break;
+      case 'delete_pocket':
+        result = await handleDeletePocket(args as any, authContext, apiClient);
         break;
       default:
         return {

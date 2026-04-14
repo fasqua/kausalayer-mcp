@@ -325,3 +325,50 @@ export interface EstimateFeeResult {
   estimated_hops: number;
   tier: string;
 }
+
+// ============ PHASE 0 - WALLET & DELETE TOOLS ============
+
+// Params
+export interface ListSavedWalletsParams {}
+
+export interface AddSavedWalletParams {
+	slot: number;
+	wallet_address: string;
+}
+
+export interface RemoveSavedWalletParams {
+	slot: number;
+}
+
+export interface DeletePocketParams {
+	pocket_id: string;
+}
+
+// Results
+export interface SavedWalletInfo {
+	slot: number;
+	address: string;
+}
+
+export interface ListSavedWalletsResult {
+	wallets: SavedWalletInfo[];
+	total_count: number;
+}
+
+export interface AddSavedWalletResult {
+	success: boolean;
+	slot: number;
+	wallet_address: string;
+}
+
+export interface RemoveSavedWalletResult {
+	success: boolean;
+	deleted: boolean;
+	slot: number;
+}
+
+export interface DeletePocketResult {
+	success: boolean;
+	pocket_id: string;
+	message: string;
+}

@@ -13,3 +13,9 @@ export { checkRouteStatusTool, handleCheckRouteStatus } from './check-route-stat
 export { retryRouteTool, handleRetryRoute } from './retry-route';
 export { recoverRouteTool, handleRecoverRoute } from './recover-route';
 export { estimateFeeTool, handleEstimateFee } from './estimate-fee';
+
+// Phase 0 - Wallet & Delete Tools
+export { listSavedWalletsTool, handleListSavedWallets } from './list-saved-wallets';
+export { addSavedWalletTool, handleAddSavedWallet } from './add-saved-wallet';
+export { removeSavedWalletTool, handleRemoveSavedWallet } from './remove-saved-wallet';
+export { deletePocketTool, handleDeletePocket } from './delete-pocket';
