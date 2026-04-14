@@ -299,4 +299,132 @@ export class MazeApiClient {
       maze_config: mazeConfig,
     });
   }
+
+  // ============ PHASE 1 - POCKET MANAGEMENT ============
+
+  /**
+   * Rename a pocket
+   */
+  async renamePocket(
+    pocketId: string,
+    metaAddress: string,
+    label: string | null
+  ): Promise<{ success: boolean; pocket_id: string; label: string | null }> {
+    return this.request('POST', `/pocket/${pocketId}/rename`, {
+      meta_address: metaAddress,
+      label,
+    });
+  }
+
+  /**
+   * Archive/unarchive a pocket
+   */
+  async archivePocket(
+    pocketId: string,
+    metaAddress: string,
+    archived: boolean
+  ): Promise<{ success: boolean; pocket_id: string; archived: boolean }> {
+    return this.request('POST', `/pocket/${pocketId}/archive`, {
+      meta_address: metaAddress,
+      archived,
+    });
+  }
+
+  // ============ PHASE 2 - HISTORY & STATS ============
+
+  /**
+   * Get route history
+   */
+  async getRouteHistory(
+    metaAddress: string,
+    limit: number = 50
+  ): Promise<{
+    success: boolean;
+    routes: Array<{
+      id: string;
+      route_type: string;
+      amount_lamports: number;
+      amount_sol: number;
+      fee_lamports: number;
+      status: string;
+      destination: string | null;
+      created_at: number;
+      completed_at: number | null;
+      tx_signature: string | null;
+    }>;
+    count: number;
+  }> {
+    return this.request('GET', '/route-history', undefined, {
+      meta_address: metaAddress,
+      limit: limit.toString(),
+    });
+  }
+
+  /**
+   * Get usage stats
+   */
+  async getUsageStats(metaAddress: string): Promise<{
+    success: boolean;
+    routes_today: number;
+    routes_this_week: number;
+    routes_this_month: number;
+    total_volume_lamports: number;
+    total_volume_sol: number;
+  }> {
+    return this.request('GET', '/usage-stats', undefined, {
+      meta_address: metaAddress,
+    });
+  }
+
+  /**
+   * Get pocket transactions
+   */
+  async getPocketTransactions(
+    pocketId: string,
+    metaAddress: string,
+    limit: number = 20
+  ): Promise<{
+    success: boolean;
+    pocket_id: string;
+    address: string;
+    transactions: Array<{
+      signature: string;
+      slot: number;
+      block_time: number | null;
+      status: string;
+    }>;
+    count: number;
+  }> {
+    return this.request('GET', `/pocket/${pocketId}/transactions`, undefined, {
+      meta_address: metaAddress,
+      limit: limit.toString(),
+    });
+  }
+
+  /**
+   * Get tier info
+   */
+  async getTierInfo(
+    metaAddress: string,
+    walletAddress?: string
+  ): Promise<{
+    success: boolean;
+    current_tier: string;
+    kausa_balance: number;
+    limits: {
+      fee_percent: number;
+      max_amount_sol: number;
+      daily_routes: number;
+    };
+    next_tier: string | null;
+    kausa_needed: number | null;
+    routes_used_today: number;
+    routes_remaining_today: number;
+  }> {
+    const query: Record<string, string> = { meta_address: metaAddress };
+    if (walletAddress) {
+      query.wallet_address = walletAddress;
+    }
+    return this.request('GET', '/tier-info', undefined, query);
+  }
 }

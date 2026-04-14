@@ -3,6 +3,7 @@
  * Export all tool handlers
  */
 
+// Phase 0 - Core Tools
 export { mazeRouteTool, handleMazeRoute } from './maze-route';
 export { createPocketTool, handleCreatePocket } from './create-pocket';
 export { getPocketInfoTool, handleGetPocketInfo } from './get-pocket-info';
@@ -19,3 +20,13 @@ export { listSavedWalletsTool, handleListSavedWallets } from './list-saved-walle
 export { addSavedWalletTool, handleAddSavedWallet } from './add-saved-wallet';
 export { removeSavedWalletTool, handleRemoveSavedWallet } from './remove-saved-wallet';
 export { deletePocketTool, handleDeletePocket } from './delete-pocket';
+
+// Phase 1 - Pocket Management
+export { renamePocketTool, handleRenamePocket } from './rename-pocket';
+export { archivePocketTool, handleArchivePocket } from './archive-pocket';
+
+// Phase 2 - History & Stats
+export { getRouteHistoryTool, handleGetRouteHistory } from './get-route-history';
+export { getUsageStatsTool, handleGetUsageStats } from './get-usage-stats';
+export { getPocketTransactionsTool, handleGetPocketTransactions } from './get-pocket-transactions';
+export { getTierInfoTool, handleGetTierInfo } from './get-tier-info';

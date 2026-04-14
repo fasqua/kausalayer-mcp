@@ -34,6 +34,29 @@ import {
   handleRecoverRoute,
   estimateFeeTool,
   handleEstimateFee,
+  // Phase 0 - Wallet & Delete Tools
+  listSavedWalletsTool,
+  handleListSavedWallets,
+  addSavedWalletTool,
+  handleAddSavedWallet,
+  removeSavedWalletTool,
+  handleRemoveSavedWallet,
+  deletePocketTool,
+  handleDeletePocket,
+  // Phase 1 - Pocket Management
+  renamePocketTool,
+  handleRenamePocket,
+  archivePocketTool,
+  handleArchivePocket,
+  // Phase 2 - History & Stats
+  getRouteHistoryTool,
+  handleGetRouteHistory,
+  getUsageStatsTool,
+  handleGetUsageStats,
+  getPocketTransactionsTool,
+  handleGetPocketTransactions,
+  getTierInfoTool,
+  handleGetTierInfo,
 } from './tools';
 
 // Load environment
@@ -66,6 +89,19 @@ const tools = [
   retryRouteTool,
   recoverRouteTool,
   estimateFeeTool,
+  // Phase 0 - Wallet & Delete Tools
+  listSavedWalletsTool,
+  addSavedWalletTool,
+  removeSavedWalletTool,
+  deletePocketTool,
+  // Phase 1 - Pocket Management
+  renamePocketTool,
+  archivePocketTool,
+  // Phase 2 - History & Stats
+  getRouteHistoryTool,
+  getUsageStatsTool,
+  getPocketTransactionsTool,
+  getTierInfoTool,
 ];
 
 // Create Express app
@@ -190,6 +226,39 @@ app.post('/call', async (req: Request, res: Response) => {
         break;
       case 'estimate_fee':
         result = await handleEstimateFee(args, authContext);
+        break;
+      // Phase 0 - Wallet & Delete Tools
+      case 'list_saved_wallets':
+        result = await handleListSavedWallets(args, authContext, apiClient);
+        break;
+      case 'add_saved_wallet':
+        result = await handleAddSavedWallet(args, authContext, apiClient);
+        break;
+      case 'remove_saved_wallet':
+        result = await handleRemoveSavedWallet(args, authContext, apiClient);
+        break;
+      case 'delete_pocket':
+        result = await handleDeletePocket(args, authContext, apiClient);
+        break;
+      // Phase 1 - Pocket Management
+      case 'rename_pocket':
+        result = await handleRenamePocket(args, authContext, apiClient);
+        break;
+      case 'archive_pocket':
+        result = await handleArchivePocket(args, authContext, apiClient);
+        break;
+      // Phase 2 - History & Stats
+      case 'get_route_history':
+        result = await handleGetRouteHistory(args, authContext, apiClient);
+        break;
+      case 'get_usage_stats':
+        result = await handleGetUsageStats(args, authContext, apiClient);
+        break;
+      case 'get_pocket_transactions':
+        result = await handleGetPocketTransactions(args, authContext, apiClient);
+        break;
+      case 'get_tier_info':
+        result = await handleGetTierInfo(args, authContext, apiClient);
         break;
       default:
         return res.status(400).json({

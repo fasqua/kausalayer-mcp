@@ -372,3 +372,102 @@ export interface DeletePocketResult {
 	pocket_id: string;
 	message: string;
 }
+
+// ============ PHASE 1 - POCKET MANAGEMENT ============
+
+// Params
+export interface RenamePocketParams {
+  pocket_id: string;
+  label: string | null;
+}
+
+export interface ArchivePocketParams {
+  pocket_id: string;
+  archived: boolean;
+}
+
+// Results
+export interface RenamePocketResult {
+  success: boolean;
+  pocket_id: string;
+  label: string | null;
+}
+
+export interface ArchivePocketResult {
+  success: boolean;
+  pocket_id: string;
+  archived: boolean;
+}
+
+// ============ PHASE 2 - HISTORY & STATS ============
+
+// Params
+export interface GetRouteHistoryParams {
+  limit?: number;
+}
+
+export interface GetUsageStatsParams {}
+
+export interface GetPocketTransactionsParams {
+  pocket_id: string;
+  limit?: number;
+}
+
+export interface GetTierInfoParams {
+  wallet_address?: string;
+}
+
+// Results
+export interface RouteHistoryEntry {
+  id: string;
+  route_type: 'funding' | 'sweep';
+  amount_sol: number;
+  fee_lamports: number;
+  status: string;
+  destination: string | null;
+  created_at: string;
+  completed_at: string | null;
+  tx_signature: string | null;
+}
+
+export interface GetRouteHistoryResult {
+  routes: RouteHistoryEntry[];
+  count: number;
+}
+
+export interface GetUsageStatsResult {
+  routes_today: number;
+  routes_this_week: number;
+  routes_this_month: number;
+  total_volume_sol: number;
+}
+
+export interface TransactionInfo {
+  signature: string;
+  slot: number;
+  block_time: string | null;
+  status: 'success' | 'failed';
+}
+
+export interface GetPocketTransactionsResult {
+  pocket_id: string;
+  address: string;
+  transactions: TransactionInfo[];
+  count: number;
+}
+
+export interface TierLimitsInfo {
+  fee_percent: number;
+  max_amount_sol: number;
+  daily_routes: number;
+}
+
+export interface GetTierInfoResult {
+  current_tier: string;
+  kausa_balance: number;
+  limits: TierLimitsInfo;
+  next_tier: string | null;
+  kausa_needed: number | null;
+  routes_used_today: number;
+  routes_remaining_today: number;
+}

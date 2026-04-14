@@ -48,6 +48,20 @@ import {
   handleRemoveSavedWallet,
   deletePocketTool,
   handleDeletePocket,
+  // Phase 1 - Pocket Management
+  renamePocketTool,
+  handleRenamePocket,
+  archivePocketTool,
+  handleArchivePocket,
+  // Phase 2 - History & Stats
+  getRouteHistoryTool,
+  handleGetRouteHistory,
+  getUsageStatsTool,
+  handleGetUsageStats,
+  getPocketTransactionsTool,
+  handleGetPocketTransactions,
+  getTierInfoTool,
+  handleGetTierInfo,
 } from './tools';
 
 // Load environment variables
@@ -85,6 +99,14 @@ const tools = [
   addSavedWalletTool,
   removeSavedWalletTool,
   deletePocketTool,
+  // Phase 1 - Pocket Management
+  renamePocketTool,
+  archivePocketTool,
+  // Phase 2 - History & Stats
+  getRouteHistoryTool,
+  getUsageStatsTool,
+  getPocketTransactionsTool,
+  getTierInfoTool,
 ];
 
 // Create MCP server
@@ -193,6 +215,26 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         break;
       case 'delete_pocket':
         result = await handleDeletePocket(args as any, authContext, apiClient);
+        break;
+      // Phase 1 - Pocket Management
+      case 'rename_pocket':
+        result = await handleRenamePocket(args as any, authContext, apiClient);
+        break;
+      case 'archive_pocket':
+        result = await handleArchivePocket(args as any, authContext, apiClient);
+        break;
+      // Phase 2 - History & Stats
+      case 'get_route_history':
+        result = await handleGetRouteHistory(args as any, authContext, apiClient);
+        break;
+      case 'get_usage_stats':
+        result = await handleGetUsageStats(args as any, authContext, apiClient);
+        break;
+      case 'get_pocket_transactions':
+        result = await handleGetPocketTransactions(args as any, authContext, apiClient);
+        break;
+      case 'get_tier_info':
+        result = await handleGetTierInfo(args as any, authContext, apiClient);
         break;
       default:
         return {

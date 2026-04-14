@@ -67,9 +67,12 @@ Ask your AI agent:
 - "List my pockets"
 - "Sweep pocket [pocket_id] to [destination]"
 - "Save my main wallet to slot 1"
-- "Show my saved wallets"
+- "Show my route history"
+- "What's my current tier?"
 
 ## Available Tools
+
+### Core Tools
 
 | Tool | Description |
 |------|-------------|
@@ -83,10 +86,31 @@ Ask your AI agent:
 | `estimate_fee` | Estimate fees before executing |
 | `retry_route` | Retry a failed route |
 | `recover_route` | Recover funds from stuck route |
+
+### Wallet Management
+
+| Tool | Description |
+|------|-------------|
 | `list_saved_wallets` | List saved destination wallets (slots 1-5) |
 | `add_saved_wallet` | Save a destination wallet to a slot |
 | `remove_saved_wallet` | Remove a saved wallet by slot |
+
+### Pocket Management
+
+| Tool | Description |
+|------|-------------|
 | `delete_pocket` | Delete an empty pocket |
+| `rename_pocket` | Add a label to a pocket for easy identification |
+| `archive_pocket` | Archive/unarchive a pocket (hidden from list by default) |
+
+### Analytics & History
+
+| Tool | Description |
+|------|-------------|
+| `get_route_history` | Get history of all maze routes (funding + sweeps) |
+| `get_usage_stats` | Get usage statistics (routes today/week/month, volume) |
+| `get_pocket_transactions` | Get transaction history for a specific pocket |
+| `get_tier_info` | Get current tier, limits, and upgrade requirements |
 
 ## Tier System
 
