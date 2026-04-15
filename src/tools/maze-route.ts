@@ -79,6 +79,14 @@ export async function handleMazeRoute(
 
   // Get meta_address for API call
   const metaAddress = ApiKeyAuth.getMetaAddress(authContext.walletAddress);
+  // Check daily route limit
+  const usageStats = await apiClient.getUsageStats(metaAddress);
+  const dailyLimit = authContext.limits.daily_routes;
+  
+  if (usageStats.routes_today >= dailyLimit) {
+    throw new Error(`Daily route limit reached (${dailyLimit}/day for ${authContext.tier} tier). Try again tomorrow or upgrade your tier by holding more KAUSA.`);
+  }
+
 
   // Use direct route endpoint
   

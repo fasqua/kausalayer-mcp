@@ -20,28 +20,28 @@ export interface TierLimits {
 
 export const TIER_LIMITS: Record<Tier, TierLimits> = {
   [Tier.FREE]: {
-    fee_percent: 1.0,
-    max_complexity: 'low',
-    max_amount_sol: 1,
-    daily_routes: 10,
+    fee_percent: 2.0,
+    max_complexity: 'medium',
+    max_amount_sol: 0.1,
+    daily_routes: 1,
   },
   [Tier.BASIC]: {
-    fee_percent: 0.5,
-    max_complexity: 'medium',
-    max_amount_sol: 10,
-    daily_routes: 50,
+    fee_percent: 1.0,
+    max_complexity: 'high',
+    max_amount_sol: 1,
+    daily_routes: 5,
   },
   [Tier.PRO]: {
+    fee_percent: 0.5,
+    max_complexity: 'high',
+    max_amount_sol: 10,
+    daily_routes: 20,
+  },
+  [Tier.ENTERPRISE]: {
     fee_percent: 0.25,
     max_complexity: 'high',
     max_amount_sol: 100,
-    daily_routes: 200,
-  },
-  [Tier.ENTERPRISE]: {
-    fee_percent: 0.1,
-    max_complexity: 'high',
-    max_amount_sol: Infinity,
-    daily_routes: Infinity,
+    daily_routes: 100,
   },
 };
 
