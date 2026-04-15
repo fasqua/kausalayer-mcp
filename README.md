@@ -64,8 +64,10 @@ Add to MCP settings:
 Ask your AI agent:
 - "Create a stealth pocket with 0.1 SOL"
 - "Route 0.5 SOL to [destination address]"
+- "Route 1 SOL to my saved wallet slot 1"
 - "List my pockets"
 - "Sweep pocket [pocket_id] to [destination]"
+- "Sweep all my pockets to slot 1"
 - "Save my main wallet to slot 1"
 - "Show my route history"
 - "What's my current tier?"
@@ -79,8 +81,9 @@ Ask your AI agent:
 | `create_pocket` | Create a stealth wallet funded via maze routing |
 | `list_pockets` | List all your stealth pockets |
 | `get_pocket_info` | Get details about a specific pocket |
-| `maze_route` | Route SOL privately (A → maze → B) |
+| `maze_route` | Route SOL privately (A → maze → B). Supports `destination` or `destination_slot` (1-5) |
 | `sweep_pocket` | Withdraw funds from pocket via maze routing |
+| `sweep_all_pockets` | Sweep ALL active pockets to single destination via maze routing |
 | `check_route_status` | Check status of a route |
 | `export_pocket_key` | Export private key for wallet import |
 | `estimate_fee` | Estimate fees before executing |
