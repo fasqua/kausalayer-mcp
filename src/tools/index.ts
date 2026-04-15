@@ -30,3 +30,6 @@ export { getRouteHistoryTool, handleGetRouteHistory } from './get-route-history'
 export { getUsageStatsTool, handleGetUsageStats } from './get-usage-stats';
 export { getPocketTransactionsTool, handleGetPocketTransactions } from './get-pocket-transactions';
 export { getTierInfoTool, handleGetTierInfo } from './get-tier-info';
+
+// Phase 3 - Batch Operations
+export { sweepAllPocketsTool, handleSweepAllPockets } from './sweep-all-pockets';

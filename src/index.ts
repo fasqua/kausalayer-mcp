@@ -54,6 +54,9 @@ import {
   archivePocketTool,
   handleArchivePocket,
   // Phase 2 - History & Stats
+  // Phase 3 - Batch Operations
+  sweepAllPocketsTool,
+  handleSweepAllPockets,
   getRouteHistoryTool,
   handleGetRouteHistory,
   getUsageStatsTool,
@@ -107,6 +110,8 @@ const tools = [
   getUsageStatsTool,
   getPocketTransactionsTool,
   getTierInfoTool,
+  // Phase 3 - Batch Operations
+  sweepAllPocketsTool,
 ];
 
 // Create MCP server
@@ -235,6 +240,10 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         break;
       case 'get_tier_info':
         result = await handleGetTierInfo(args as any, authContext, apiClient, tierManager);
+        break;
+      // Phase 3 - Batch Operations
+      case "sweep_all_pockets":
+        result = await handleSweepAllPockets(args as any, authContext, apiClient, auth);
         break;
       default:
         return {

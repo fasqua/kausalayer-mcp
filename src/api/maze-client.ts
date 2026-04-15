@@ -273,7 +273,8 @@ export class MazeApiClient {
   async createRoute(
     metaAddress: string,
     amountSol: number,
-    destination: string,
+    destination?: string,
+    destinationSlot?: number,
     complexity: Complexity = 'medium'
   ): Promise<{
     success: boolean;
@@ -291,13 +292,17 @@ export class MazeApiClient {
     };
   }> {
     const mazeConfig = this.complexityToConfig(complexity);
-    
-    return this.request('POST', '/route', {
+    const body: any = {
       meta_address: metaAddress,
       amount_sol: amountSol,
-      destination,
       maze_config: mazeConfig,
-    });
+    };
+    if (destinationSlot !== undefined) {
+      body.destination_slot = destinationSlot;
+    } else if (destination) {
+      body.destination = destination;
+    }
+    return this.request("POST", "/route", body);
   }
 
   // ============ PHASE 1 - POCKET MANAGEMENT ============
@@ -426,5 +431,46 @@ export class MazeApiClient {
       query.wallet_address = walletAddress;
     }
     return this.request('GET', '/tier-info', undefined, query);
+  }
+
+  // ============ PHASE 3 - SWEEP ALL POCKETS ============
+
+  /**
+   * Sweep all pockets to a single destination
+   */
+  async sweepAllPockets(
+    metaAddress: string,
+    destination: string,
+    complexity: Complexity = "medium",
+    destinationSlot?: number
+  ): Promise<{
+    success: boolean;
+    total_pockets: number;
+    successful_sweeps: number;
+    failed_sweeps: number;
+    total_amount_swept: number;
+    destination: string;
+    results: Array<{
+      pocket_id: string;
+      success: boolean;
+      sweep_id?: string;
+      amount_swept?: number;
+      error?: string;
+    }>;
+  }> {
+    const mazeConfig = this.complexityToConfig(complexity);
+
+    const body: any = {
+      meta_address: metaAddress,
+      maze_config: mazeConfig,
+    };
+
+    if (destinationSlot !== undefined) {
+      body.destination_slot = destinationSlot;
+    } else {
+      body.destination = destination;
+    }
+
+    return this.request("POST", "/pockets/sweep-all", body);
   }
 }

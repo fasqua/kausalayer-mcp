@@ -22,6 +22,10 @@ export const mazeRouteTool: Tool = {
         type: 'string',
         description: 'Destination Solana wallet address (base58)',
       },
+      destination_slot: {
+        type: "number",
+        description: "Saved wallet slot (1-5) to route to (alternative to destination)",
+      },
       amount_sol: {
         type: 'number',
         description: 'Amount of SOL to send (minimum 0.01)',
@@ -32,7 +36,7 @@ export const mazeRouteTool: Tool = {
         description: 'Privacy level. Low: 5-7 hops. Medium: 8-12 hops. High: 13-20 hops.',
       },
     },
-    required: ['destination', 'amount_sol'],
+    required: ['amount_sol'],
   },
 };
 
@@ -42,16 +46,26 @@ export async function handleMazeRoute(
   apiClient: MazeApiClient,
   auth: ApiKeyAuth
 ): Promise<MazeRouteResult> {
-  const { destination, amount_sol, complexity } = params;
+  const { destination, destination_slot, amount_sol, complexity } = params;
 
   // Validate minimum amount
   if (amount_sol < 0.01) {
     throw new Error('Minimum transfer amount is 0.01 SOL');
   }
 
-  // Validate destination address format
-  if (!destination || destination.length < 32 || destination.length > 44) {
-    throw new Error('Invalid destination address');
+  // Validate that either destination_slot or destination is provided
+  if (destination_slot === undefined && !destination) {
+    throw new Error("Must specify either destination_slot (1-5) or destination address");
+  }
+
+  // Validate destination_slot range
+  if (destination_slot !== undefined && (destination_slot < 1 || destination_slot > 5)) {
+    throw new Error("Invalid slot. Must be 1-5");
+  }
+
+  // Validate destination address format if provided
+  if (destination && (destination.length < 32 || destination.length > 44)) {
+    throw new Error("Invalid destination address");
   }
 
   // Determine complexity (default to max allowed by tier)
@@ -68,7 +82,7 @@ export async function handleMazeRoute(
 
   // Use direct route endpoint
   
-  const response = await apiClient.createRoute(metaAddress, amount_sol, destination, effectiveComplexity);
+  const response = await apiClient.createRoute(metaAddress, amount_sol, destination, destination_slot, effectiveComplexity);
 
   if (!response.success) {
     throw new Error('Failed to create route');

@@ -192,7 +192,8 @@ export interface RecoverResponse {
 // ============ MCP TOOL PARAMS ============
 
 export interface MazeRouteParams {
-  destination: string;
+  destination_slot?: number;
+  destination?: string;
   amount_sol: number;
   complexity?: Complexity;
 }
@@ -470,4 +471,48 @@ export interface GetTierInfoResult {
   kausa_needed: number | null;
   routes_used_today: number;
   routes_remaining_today: number;
+}
+
+// ============ PHASE 3 - SWEEP ALL POCKETS ============
+
+// Params
+export interface SweepAllPocketsParams {
+  destination_slot?: number;
+  destination?: string;
+  complexity?: Complexity;
+}
+
+// API Response types
+export interface SweepAllPocketResultApi {
+  pocket_id: string;
+  success: boolean;
+  sweep_id?: string;
+  amount_swept?: number;
+  error?: string;
+}
+
+export interface SweepAllPocketsResponse {
+  success: boolean;
+  total_pockets: number;
+  successful_sweeps: number;
+  failed_sweeps: number;
+  total_amount_swept: number;
+  destination: string;
+  results: SweepAllPocketResultApi[];
+}
+
+// MCP Result
+export interface SweepAllPocketsResult {
+  total_pockets: number;
+  successful_sweeps: number;
+  failed_sweeps: number;
+  total_amount_sol: number;
+  destination: string;
+  results: {
+    pocket_id: string;
+    success: boolean;
+    sweep_id?: string;
+    amount_sol?: number;
+    error?: string;
+  }[];
 }
