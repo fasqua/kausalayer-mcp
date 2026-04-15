@@ -7,7 +7,7 @@ import { Connection, PublicKey } from '@solana/web3.js';
 import { Tier, TierLimits, TIER_LIMITS, TIER_THRESHOLDS } from '../types';
 
 // Config cache
-interface TokenConfig {
+interface MasterTokenConfig {
   symbol: string;
   mint: string;
   thresholds: {
@@ -15,13 +15,25 @@ interface TokenConfig {
     PRO: number;
     ENTERPRISE: number;
   };
+  minimum_for_partner_unlock: number;
+}
+
+interface PartnerTokenConfig {
+  symbol: string;
+  mint: string;
+  thresholds: {
+    BASIC: number;
+    PRO: number;
+  };
+  max_tier: string;
+  is_official: boolean;
 }
 
 interface TierConfig {
-  tokens: TokenConfig[];
+  master_token: MasterTokenConfig;
+  partner_tokens: PartnerTokenConfig[];
   limits: Record<string, TierLimits>;
 }
-
 export class TierManager {
   private connection: Connection;
   private rpcUrl: string;
@@ -153,7 +165,7 @@ export class TierManager {
   }
 
   /**
-   * Get full tier info for a wallet (supports multiple tokens)
+   * Get full tier info for a wallet (supports multiple tokens with KAUSA as master key)
    */
   async getWalletTier(walletAddress: string): Promise<{
     tier: Tier;
@@ -166,14 +178,42 @@ export class TierManager {
     let highestTier: Tier = Tier.FREE;
     let kausaBalance = 0;
 
-    if (config && config.tokens && config.tokens.length > 0) {
-      // Check balance for each token in config
-      for (const token of config.tokens) {
+    if (config && config.master_token) {
+      // New config format with master_token and partner_tokens
+      
+      // Step 1: Check KAUSA (master token) balance
+      kausaBalance = await this.getTokenBalance(walletAddress, config.master_token.mint);
+      const kausaTier = this.determineTierFromBalance(kausaBalance, config.master_token.thresholds);
+      highestTier = kausaTier;
+
+      // Step 2: Check if KAUSA meets minimum for partner unlock
+      const minForPartner = config.master_token.minimum_for_partner_unlock || 100;
+      
+      if (kausaBalance >= minForPartner && config.partner_tokens && config.partner_tokens.length > 0) {
+        // User has enough KAUSA to unlock partner token tiers
+        for (const partner of config.partner_tokens) {
+          const balance = await this.getTokenBalance(walletAddress, partner.mint);
+          
+          if (balance > 0) {
+            // Determine tier from partner token (only BASIC and PRO available)
+            let partnerTier: Tier = Tier.FREE;
+            if (balance >= partner.thresholds.PRO) {
+              partnerTier = Tier.PRO; // Capped at PRO
+            } else if (balance >= partner.thresholds.BASIC) {
+              partnerTier = Tier.BASIC;
+            }
+            
+            // Compare and take highest (but partner tokens capped at PRO)
+            highestTier = this.compareTiers(highestTier, partnerTier);
+          }
+        }
+      }
+    } else if (config && (config as any).tokens && (config as any).tokens.length > 0) {
+      // Legacy config format (backward compatibility)
+      for (const token of (config as any).tokens) {
         const balance = await this.getTokenBalance(walletAddress, token.mint);
         const tier = this.determineTierFromBalance(balance, token.thresholds);
         highestTier = this.compareTiers(highestTier, tier);
-
-        // Track KAUSA balance specifically for backward compatibility
         if (token.symbol === 'KAUSA') {
           kausaBalance = balance;
         }
