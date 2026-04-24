@@ -72,7 +72,7 @@ Ask your AI agent:
 - "Show my route history"
 - "What's my current tier?"
 
-## Available Tools
+## Available Tools (35)
 
 ### Core Tools
 
@@ -84,11 +84,30 @@ Ask your AI agent:
 | `maze_route` | Route SOL privately (A → maze → B). Supports `destination` or `destination_slot` (1-5) |
 | `sweep_pocket` | Withdraw funds from pocket via maze routing |
 | `sweep_all_pockets` | Sweep ALL active pockets to single destination via maze routing |
-| `check_route_status` | Check status of a route |
+| `check_route_status` | Check status of a route or funding request |
+| `get_sweep_status` | Check progress of a sweep operation |
 | `export_pocket_key` | Export private key for wallet import |
 | `estimate_fee` | Estimate fees before executing |
 | `retry_route` | Retry a failed route |
 | `recover_route` | Recover funds from stuck route |
+
+### P2P Transfers
+
+| Tool | Description |
+|------|-------------|
+| `send_to_pocket` | Send SOL from one pocket to another via maze routing |
+| `get_p2p_status` | Check progress of a P2P transfer |
+| `recover_p2p` | Recover funds stuck in a failed P2P transfer |
+
+### Swap Operations
+
+| Tool | Description |
+|------|-------------|
+| `swap_quote` | Get a swap quote (expected output, price impact) |
+| `swap_execute` | Execute a token swap via Jupiter (SOL to token or token to SOL) |
+| `get_token_balances` | Get all token balances (SOL + SPL tokens) for a pocket |
+| `get_token_list` | Get list of supported tokens |
+| `resolve_token` | Resolve token by symbol or contract address |
 
 ### Wallet Management
 
@@ -97,6 +116,14 @@ Ask your AI agent:
 | `list_saved_wallets` | List saved destination wallets (slots 1-5) |
 | `add_saved_wallet` | Save a destination wallet to a slot |
 | `remove_saved_wallet` | Remove a saved wallet by slot |
+
+### Contacts
+
+| Tool | Description |
+|------|-------------|
+| `add_contact` | Add a contact alias mapped to a pocket ID |
+| `list_contacts` | List all saved contacts |
+| `delete_contact` | Delete a contact by alias |
 
 ### Pocket Management
 
@@ -114,6 +141,13 @@ Ask your AI agent:
 | `get_usage_stats` | Get usage statistics (routes today/week/month, volume) |
 | `get_pocket_transactions` | Get transaction history for a specific pocket |
 | `get_tier_info` | Get current tier, limits, and upgrade requirements |
+
+### Maze Preferences
+
+| Tool | Description |
+|------|-------------|
+| `get_maze_preferences` | Get saved maze routing preferences |
+| `save_maze_preferences` | Save custom maze routing config (hops, split ratio, delays) |
 
 ## Tier System
 
