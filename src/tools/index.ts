@@ -33,3 +33,29 @@ export { getTierInfoTool, handleGetTierInfo } from './get-tier-info';
 
 // Phase 3 - Batch Operations
 export { sweepAllPocketsTool, handleSweepAllPockets } from './sweep-all-pockets';
+
+// Phase 4 - P2P Transfers
+export { sendToPocketTool, handleSendToPocket } from './send-to-pocket';
+export { getP2pStatusTool, handleGetP2pStatus } from './get-p2p-status';
+export { recoverP2pTool, handleRecoverP2p } from './recover-p2p';
+
+// Phase 4 - Swap Operations
+export { swapQuoteTool, handleSwapQuote } from './swap-quote';
+export { swapExecuteTool, handleSwapExecute } from './swap-execute';
+export { getTokenBalancesTool, handleGetTokenBalances } from './get-token-balances';
+
+// Phase 4 - Contacts
+export { addContactTool, handleAddContact } from './add-contact';
+export { listContactsTool, handleListContacts } from './list-contacts';
+export { deleteContactTool, handleDeleteContact } from './delete-contact';
+
+// Phase 4 - Sweep Status
+export { getSweepStatusTool, handleGetSweepStatus } from './get-sweep-status';
+
+// Phase 4 - Token List & Resolve
+export { getTokenListTool, handleGetTokenList } from './get-token-list';
+export { resolveTokenTool, handleResolveToken } from './resolve-token';
+
+// Phase 4 - Maze Preferences
+export { getMazePreferencesTool, handleGetMazePreferences } from './get-maze-preferences';
+export { saveMazePreferencesTool, handleSaveMazePreferences } from './save-maze-preferences';

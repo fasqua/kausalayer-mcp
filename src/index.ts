@@ -65,6 +65,40 @@ import {
   handleGetPocketTransactions,
   getTierInfoTool,
   handleGetTierInfo,
+  // Phase 4 - P2P Transfers
+  sendToPocketTool,
+  handleSendToPocket,
+  getP2pStatusTool,
+  handleGetP2pStatus,
+  recoverP2pTool,
+  handleRecoverP2p,
+  // Phase 4 - Swap Operations
+  swapQuoteTool,
+  handleSwapQuote,
+  swapExecuteTool,
+  handleSwapExecute,
+  getTokenBalancesTool,
+  handleGetTokenBalances,
+  // Phase 4 - Contacts
+  addContactTool,
+  handleAddContact,
+  listContactsTool,
+  handleListContacts,
+  deleteContactTool,
+  handleDeleteContact,
+  // Phase 4 - Sweep Status
+  getSweepStatusTool,
+  handleGetSweepStatus,
+  // Phase 4 - Token List & Resolve
+  getTokenListTool,
+  handleGetTokenList,
+  resolveTokenTool,
+  handleResolveToken,
+  // Phase 4 - Maze Preferences
+  getMazePreferencesTool,
+  handleGetMazePreferences,
+  saveMazePreferencesTool,
+  handleSaveMazePreferences,
 } from './tools';
 
 // Load environment variables
@@ -112,6 +146,26 @@ const tools = [
   getTierInfoTool,
   // Phase 3 - Batch Operations
   sweepAllPocketsTool,
+  // Phase 4 - P2P Transfers
+  sendToPocketTool,
+  getP2pStatusTool,
+  recoverP2pTool,
+  // Phase 4 - Swap Operations
+  swapQuoteTool,
+  swapExecuteTool,
+  getTokenBalancesTool,
+  // Phase 4 - Contacts
+  addContactTool,
+  listContactsTool,
+  deleteContactTool,
+  // Phase 4 - Sweep Status
+  getSweepStatusTool,
+  // Phase 4 - Token List & Resolve
+  getTokenListTool,
+  resolveTokenTool,
+  // Phase 4 - Maze Preferences
+  getMazePreferencesTool,
+  saveMazePreferencesTool,
 ];
 
 // Create MCP server
@@ -245,7 +299,55 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       case "sweep_all_pockets":
         result = await handleSweepAllPockets(args as any, authContext, apiClient, auth);
         break;
-      default:
+      // Phase 4 - P2P Transfers
+      case 'send_to_pocket':
+        result = await handleSendToPocket(args as any, authContext, apiClient, auth);
+        break;
+      case 'get_p2p_status':
+        result = await handleGetP2pStatus(args as any, authContext, apiClient);
+        break;
+      case 'recover_p2p':
+        result = await handleRecoverP2p(args as any, authContext, apiClient);
+        break;
+      // Phase 4 - Swap Operations
+      case 'swap_quote':
+        result = await handleSwapQuote(args as any, authContext, apiClient);
+        break;
+      case 'swap_execute':
+        result = await handleSwapExecute(args as any, authContext, apiClient, auth);
+        break;
+      case 'get_token_balances':
+        result = await handleGetTokenBalances(args as any, authContext, apiClient);
+        break;
+      // Phase 4 - Contacts
+      case 'add_contact':
+        result = await handleAddContact(args as any, authContext, apiClient);
+        break;
+      case 'list_contacts':
+        result = await handleListContacts(args as any, authContext, apiClient);
+        break;
+      case 'delete_contact':
+        result = await handleDeleteContact(args as any, authContext, apiClient);
+        break;
+      // Phase 4 - Sweep Status
+      case 'get_sweep_status':
+        result = await handleGetSweepStatus(args as any, authContext, apiClient);
+        break;
+      // Phase 4 - Token List & Resolve
+      case 'get_token_list':
+        result = await handleGetTokenList(args as any, authContext, apiClient);
+        break;
+      case 'resolve_token':
+        result = await handleResolveToken(args as any, authContext, apiClient);
+        break;
+      // Phase 4 - Maze Preferences
+      case 'get_maze_preferences':
+        result = await handleGetMazePreferences(args as any, authContext, apiClient);
+        break;
+      case 'save_maze_preferences':
+        result = await handleSaveMazePreferences(args as any, authContext, apiClient);
+        break;
+            default:
         return {
           content: [
             {

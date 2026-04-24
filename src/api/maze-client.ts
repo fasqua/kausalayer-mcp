@@ -15,6 +15,7 @@ import {
   RecoverResponse,
   MazeConfig,
   Complexity,
+  SweepStatusApiResponse,
 } from '../types';
 
 export class MazeApiClient {
@@ -163,8 +164,8 @@ export class MazeApiClient {
   /**
    * Get sweep status
    */
-  async getSweepStatus(sweepId: string): Promise<StatusResponse> {
-    return this.request<StatusResponse>('GET', `/sweep/${sweepId}/status`);
+  async getSweepStatus(sweepId: string): Promise<SweepStatusApiResponse> {
+    return this.request<SweepStatusApiResponse>('GET', `/sweep/${sweepId}/status`);
   }
 
   // ============ RECOVERY OPERATIONS ============
@@ -473,4 +474,146 @@ export class MazeApiClient {
 
     return this.request("POST", "/pockets/sweep-all", body);
   }
+
+
+  // ============ PHASE 4 - P2P TRANSFERS ============
+
+  async sendToPocket(
+    pocketId: string,
+    metaAddress: string,
+    recipientPocketId: string,
+    amountSol: number,
+    complexity: Complexity = 'medium'
+  ): Promise<any> {
+    const mazeConfig = this.complexityToConfig(complexity);
+    return this.request('POST', `/pocket/${pocketId}/send`, {
+      meta_address: metaAddress,
+      recipient_pocket_id: recipientPocketId,
+      amount_sol: amountSol,
+      maze_config: mazeConfig,
+    });
+  }
+
+  async getP2pStatus(transferId: string): Promise<any> {
+    return this.request('GET', `/p2p/${transferId}/status`);
+  }
+
+  async recoverP2p(
+    transferId: string,
+    metaAddress: string
+  ): Promise<RecoverResponse> {
+    return this.request('POST', `/p2p/${transferId}/recover`, {
+      meta_address: metaAddress,
+    });
+  }
+
+  // ============ PHASE 4 - SWAP OPERATIONS ============
+
+  async swapQuote(
+    pocketId: string,
+    metaAddress: string,
+    outputToken: string,
+    amountSol: number,
+    slippageBps?: number
+  ): Promise<any> {
+    const query: Record<string, string> = {
+      meta_address: metaAddress,
+      output_token: outputToken,
+      amount_sol: amountSol.toString(),
+    };
+    if (slippageBps !== undefined) query.slippage_bps = slippageBps.toString();
+    return this.request('GET', `/pocket/${pocketId}/swap/quote`, undefined, query);
+  }
+
+  async swapExecute(
+    pocketId: string,
+    metaAddress: string,
+    outputToken: string,
+    amountSol: number,
+    slippageBps?: number,
+    inputToken?: string,
+    amountRaw?: number
+  ): Promise<any> {
+    const body: any = {
+      meta_address: metaAddress,
+      output_token: outputToken,
+      amount_sol: amountSol,
+    };
+    if (slippageBps !== undefined) body.slippage_bps = slippageBps;
+    if (inputToken) body.input_token = inputToken;
+    if (amountRaw !== undefined) body.amount_raw = amountRaw;
+    return this.request('POST', `/pocket/${pocketId}/swap`, body);
+  }
+
+  async getTokenBalances(
+    pocketId: string,
+    metaAddress: string
+  ): Promise<any> {
+    return this.request('GET', `/pocket/${pocketId}/token-balances`, undefined, {
+      meta_address: metaAddress,
+    });
+  }
+
+  // ============ PHASE 4 - CONTACTS ============
+
+  async addContact(
+    metaAddress: string,
+    alias: string,
+    pocketId: string,
+    label?: string
+  ): Promise<any> {
+    const body: any = {
+      meta_address: metaAddress,
+      alias,
+      pocket_id: pocketId,
+    };
+    if (label) body.label = label;
+    return this.request('POST', '/contact', body);
+  }
+
+  async listContacts(metaAddress: string): Promise<any> {
+    return this.request('GET', '/contacts', undefined, {
+      meta_address: metaAddress,
+    });
+  }
+
+  async deleteContact(
+    alias: string,
+    metaAddress: string
+  ): Promise<any> {
+    return this.request('DELETE', `/contact/${encodeURIComponent(alias)}`, undefined, {
+      meta_address: metaAddress,
+    });
+  }
+
+  // ============ PHASE 4 - TOKEN LIST & RESOLVE ============
+
+  async getTokenList(): Promise<any> {
+    return this.request('GET', '/tokens');
+  }
+
+  async resolveToken(query: string): Promise<any> {
+    return this.request('GET', '/token/resolve', undefined, {
+      query,
+    });
+  }
+
+  // ============ PHASE 4 - MAZE PREFERENCES ============
+
+  async getMazePreferences(metaAddress: string): Promise<any> {
+    return this.request('POST', '/preferences/maze', {
+      meta_address: metaAddress,
+    });
+  }
+
+  async saveMazePreferences(
+    metaAddress: string,
+    preferences: Record<string, any>
+  ): Promise<any> {
+    return this.request('POST', '/preferences/maze/save', {
+      meta_address: metaAddress,
+      ...preferences,
+    });
+  }
+
 }

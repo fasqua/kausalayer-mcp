@@ -158,6 +158,18 @@ export interface SweepResponse {
   tx_signature?: string;
 }
 
+
+// Sweep Status API Response (different from generic StatusResponse)
+export interface SweepStatusApiResponse {
+  success: boolean;
+  sweep_id: string;
+  status: string;
+  progress?: MazeProgress;
+  destination?: string;
+  amount_lamports?: number;
+  tx_signature?: string;
+  error?: string;
+}
 // Status
 export interface MazeProgress {
   completed_nodes: number;
@@ -515,4 +527,242 @@ export interface SweepAllPocketsResult {
     amount_sol?: number;
     error?: string;
   }[];
+}
+
+
+// ============ PHASE 4 - P2P TRANSFERS ============
+
+// Params
+export interface SendToPocketParams {
+  pocket_id: string;
+  recipient_pocket_id: string;
+  amount_sol: number;
+  complexity?: Complexity;
+}
+
+export interface GetP2pStatusParams {
+  transfer_id: string;
+}
+
+export interface RecoverP2pParams {
+  transfer_id: string;
+}
+
+// Results
+export interface SendToPocketResult {
+  transfer_id: string;
+  amount_sol: number;
+  fee_sol: number;
+  status: string;
+  maze_info: {
+    nodes: number;
+    levels: number;
+    estimated_time_seconds: number;
+  };
+}
+
+export interface GetP2pStatusResult {
+  transfer_id: string;
+  status: string;
+  progress?: {
+    completed_nodes: number;
+    total_nodes: number;
+    current_level: number;
+    total_levels: number;
+    percentage: number;
+  };
+  error?: string;
+}
+
+export interface RecoverP2pResult {
+  recovered_sol: number;
+  tx_signatures: string[];
+  message: string;
+}
+
+// ============ PHASE 4 - SWAP OPERATIONS ============
+
+// Params
+export interface SwapQuoteParams {
+  pocket_id: string;
+  output_token: string;
+  amount_sol: number;
+  slippage_bps?: number;
+}
+
+export interface SwapExecuteParams {
+  pocket_id: string;
+  output_token: string;
+  amount_sol: number;
+  slippage_bps?: number;
+  input_token?: string;
+  amount_raw?: number;
+}
+
+export interface GetTokenBalancesParams {
+  pocket_id: string;
+}
+
+// Results
+export interface SwapQuoteResult {
+  input_amount: string;
+  output_amount: string;
+  input_mint: string;
+  output_mint: string;
+  price_impact: string | null;
+  output_token: {
+    symbol: string;
+    name: string;
+    mint: string;
+  } | null;
+}
+
+export interface SwapExecuteResult {
+  success: boolean;
+  tx_signature: string | null;
+  input_amount: string;
+  output_amount: string;
+  input_mint: string;
+  output_mint: string;
+  error: string | null;
+}
+
+export interface TokenBalanceInfo {
+  mint: string;
+  symbol: string;
+  name: string;
+  decimals: number;
+  balance_raw: number;
+  balance_formatted: number;
+  token_program: string;
+}
+
+export interface GetTokenBalancesResult {
+  pocket_id: string;
+  sol_balance: number;
+  tokens: TokenBalanceInfo[];
+}
+
+// ============ PHASE 4 - CONTACTS ============
+
+// Params
+export interface AddContactParams {
+  alias: string;
+  pocket_id: string;
+  label?: string;
+}
+
+export interface ListContactsParams {}
+
+export interface DeleteContactParams {
+  alias: string;
+}
+
+// Results
+export interface ContactInfo {
+  alias: string;
+  pocket_id: string;
+  label?: string;
+  created_at: number;
+}
+
+export interface AddContactResult {
+  success: boolean;
+  alias: string;
+  pocket_id: string;
+}
+
+export interface ListContactsResult {
+  contacts: ContactInfo[];
+  count: number;
+}
+
+export interface DeleteContactResult {
+  success: boolean;
+  deleted: boolean;
+}
+
+// ============ PHASE 4 - SWEEP STATUS ============
+
+// Params
+export interface GetSweepStatusParams {
+  sweep_id: string;
+}
+
+// Results
+export interface GetSweepStatusResult {
+  sweep_id: string;
+  status: string;
+  progress?: {
+    completed_nodes: number;
+    total_nodes: number;
+    current_level: number;
+    total_levels: number;
+    percentage: number;
+  };
+  destination?: string;
+  amount_lamports?: number;
+  error?: string;
+}
+
+// ============ PHASE 4 - TOKEN LIST & RESOLVE ============
+
+// Params
+export interface GetTokenListParams {}
+
+export interface ResolveTokenParams {
+  query: string;
+}
+
+// Results
+export interface TokenListEntry {
+  symbol: string;
+  name: string;
+  mint: string;
+  decimals: number;
+  logo_uri: string | null;
+}
+
+export interface GetTokenListResult {
+  tokens: TokenListEntry[];
+  count: number;
+}
+
+export interface ResolveTokenResult {
+  success: boolean;
+  token?: TokenListEntry;
+  error?: string;
+}
+
+// ============ PHASE 4 - MAZE PREFERENCES ============
+
+// Params
+export interface GetMazePreferencesParams {}
+
+export interface SaveMazePreferencesParams {
+  hop_count?: number;
+  split_ratio?: number;
+  merge_strategy?: string;
+  delay_pattern?: string;
+  delay_ms?: number;
+  delay_scope?: string;
+}
+
+// Results
+export interface MazePreferencesData {
+  hop_count: number;
+  split_ratio: number;
+  merge_strategy: string;
+  delay_pattern: string;
+  delay_ms: number;
+  delay_scope: string;
+  updated_at: number;
+}
+
+export interface GetMazePreferencesResult {
+  preferences: MazePreferencesData | null;
+}
+
+export interface SaveMazePreferencesResult {
+  success: boolean;
 }

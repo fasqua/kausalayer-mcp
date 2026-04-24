@@ -32,16 +32,29 @@ export async function handleCheckRouteStatus(
 ): Promise<CheckRouteStatusResult> {
   const { route_id } = params;
 
-  let response;
-
   // Determine which endpoint to call based on ID prefix
   if (route_id.startsWith('sweep_')) {
-    response = await apiClient.getSweepStatus(route_id);
-  } else {
-    // For fund_xxx, pocket_xxx, or route_xxx, use funding status
-    response = await apiClient.getFundingStatus(route_id);
+    const response = await apiClient.getSweepStatus(route_id);
+    if (!response.success) {
+      throw new Error(response.error || 'Route not found');
+    }
+    return {
+      route_id: response.sweep_id || route_id,
+      status: response.status,
+      progress: response.progress ? {
+        completed_nodes: response.progress.completed_nodes,
+        total_nodes: response.progress.total_nodes,
+        current_level: response.progress.current_level,
+        total_levels: response.progress.total_levels,
+        percentage: response.progress.percentage,
+      } : undefined,
+      error: response.error,
+      tx_signature: response.tx_signature,
+    };
   }
 
+  // For fund_xxx, pocket_xxx, or route_xxx, use funding status
+  const response = await apiClient.getFundingStatus(route_id);
   if (!response.success) {
     throw new Error(response.error || 'Route not found');
   }
