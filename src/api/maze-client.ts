@@ -616,4 +616,28 @@ export class MazeApiClient {
     });
   }
 
+
+  // ============ KAUSAPAY (x402/MPP) ============
+
+  async kausaPay(
+    pocketId: string,
+    metaAddress: string,
+    url: string,
+    maxAmountUsdc: number
+  ): Promise<{
+    success: boolean;
+    protocol_used: string;
+    amount_paid_usdc: number;
+    token_symbol: string;
+    payment_signature: string;
+    response_body: string;
+    error?: string;
+  }> {
+    return this.request('POST', `/pocket/${pocketId}/pay`, {
+      meta_address: metaAddress,
+      url,
+      max_amount_usdc: maxAmountUsdc,
+    });
+  }
+
 }

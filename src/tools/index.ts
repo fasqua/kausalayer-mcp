@@ -59,3 +59,6 @@ export { resolveTokenTool, handleResolveToken } from './resolve-token';
 // Phase 4 - Maze Preferences
 export { getMazePreferencesTool, handleGetMazePreferences } from './get-maze-preferences';
 export { saveMazePreferencesTool, handleSaveMazePreferences } from './save-maze-preferences';
+
+// KausaPay - x402/MPP Payment
+export { kausaPayTool, handleKausaPay } from './kausa-pay';

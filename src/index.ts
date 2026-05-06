@@ -99,6 +99,9 @@ import {
   handleGetMazePreferences,
   saveMazePreferencesTool,
   handleSaveMazePreferences,
+  // KausaPay
+  kausaPayTool,
+  handleKausaPay,
 } from './tools';
 
 // Load environment variables
@@ -166,6 +169,8 @@ const tools = [
   // Phase 4 - Maze Preferences
   getMazePreferencesTool,
   saveMazePreferencesTool,
+  // KausaPay
+  kausaPayTool,
 ];
 
 // Create MCP server
@@ -346,6 +351,10 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         break;
       case 'save_maze_preferences':
         result = await handleSaveMazePreferences(args as any, authContext, apiClient);
+        break;
+      // KausaPay
+      case 'kausa_pay':
+        result = await handleKausaPay(args as any, authContext, apiClient, auth);
         break;
             default:
         return {
