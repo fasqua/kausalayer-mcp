@@ -623,7 +623,9 @@ export class MazeApiClient {
     pocketId: string,
     metaAddress: string,
     url: string,
-    maxAmountUsdc: number
+    maxAmountUsdc: number,
+    method: string = 'GET',
+    body?: string,
   ): Promise<{
     success: boolean;
     protocol_used: string;
@@ -637,6 +639,8 @@ export class MazeApiClient {
       meta_address: metaAddress,
       url,
       max_amount_usdc: maxAmountUsdc,
+      method,
+      body: body || undefined,
     });
   }
 

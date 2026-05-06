@@ -29,13 +29,23 @@ export const kausaPayTool: Tool = {
         description: 'Maximum USDC amount willing to pay (e.g. 0.01). Payment will fail if endpoint requires more than this.',
         default: 0.01,
       },
+      method: {
+        type: 'string',
+        description: 'HTTP method for the endpoint (GET or POST). Default: GET.',
+        enum: ['GET', 'POST'],
+        default: 'GET',
+      },
+      body: {
+        type: 'string',
+        description: 'JSON request body for POST endpoints.',
+      },
     },
     required: ['pocket_id', 'url'],
   },
 };
 
 export async function handleKausaPay(
-  params: { pocket_id: string; url: string; max_amount_usdc?: number },
+  params: { pocket_id: string; url: string; max_amount_usdc?: number; method?: string; body?: string },
   authContext: AuthContext,
   apiClient: MazeApiClient,
   auth: ApiKeyAuth
@@ -48,7 +58,7 @@ export async function handleKausaPay(
   content: string;
   error?: string;
 }> {
-  const { pocket_id, url, max_amount_usdc = 0.01 } = params;
+  const { pocket_id, url, max_amount_usdc = 0.01, method = 'GET', body } = params;
 
   // Validate URL
   if (!url || !url.startsWith('https://')) {
@@ -65,7 +75,9 @@ export async function handleKausaPay(
     pocket_id,
     metaAddress,
     url,
-    max_amount_usdc
+    max_amount_usdc,
+    method,
+    body
   );
 
   if (!response.success) {
