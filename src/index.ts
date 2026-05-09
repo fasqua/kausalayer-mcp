@@ -102,6 +102,13 @@ import {
   // KausaPay
   kausaPayTool,
   handleKausaPay,
+  // KausaGate
+  kausaGateRegisterTool,
+  handleKausaGateRegister,
+  kausaGateListTool,
+  handleKausaGateList,
+  kausaGateRemoveTool,
+  handleKausaGateRemove,
 } from './tools';
 
 // Load environment variables
@@ -171,6 +178,10 @@ const tools = [
   saveMazePreferencesTool,
   // KausaPay
   kausaPayTool,
+  // KausaGate
+  kausaGateRegisterTool,
+  kausaGateListTool,
+  kausaGateRemoveTool,
 ];
 
 // Create MCP server
@@ -355,6 +366,16 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       // KausaPay
       case 'kausa_pay':
         result = await handleKausaPay(args as any, authContext, apiClient, auth);
+        break;
+      // KausaGate
+      case 'kausa_gate_register':
+        result = await handleKausaGateRegister(args as any, authContext, apiClient, auth);
+        break;
+      case 'kausa_gate_list':
+        result = await handleKausaGateList(args as any, authContext, apiClient, auth);
+        break;
+      case 'kausa_gate_remove':
+        result = await handleKausaGateRemove(args as any, authContext, apiClient, auth);
         break;
             default:
         return {

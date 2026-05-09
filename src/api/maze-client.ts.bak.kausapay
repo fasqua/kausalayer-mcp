@@ -623,9 +623,7 @@ export class MazeApiClient {
     pocketId: string,
     metaAddress: string,
     url: string,
-    maxAmountUsdc: number,
-    method: string = 'GET',
-    body?: string,
+    maxAmountUsdc: number
   ): Promise<{
     success: boolean;
     protocol_used: string;
@@ -639,71 +637,6 @@ export class MazeApiClient {
       meta_address: metaAddress,
       url,
       max_amount_usdc: maxAmountUsdc,
-      method,
-      body: body || undefined,
-    });
-  }
-
-
-  // === KausaGate ===
-
-  async gateRegister(
-    pocketId: string,
-    metaAddress: string,
-    endpointUrl: string,
-    method: string,
-    description: string,
-    priceUsdc: number,
-    category: string,
-  ): Promise<{
-    success: boolean;
-    endpoint_id?: string;
-    pocket_id: string;
-    pocket_address: string;
-    error?: string;
-  }> {
-    return this.request('POST', `/pocket/${pocketId}/gate/register`, {
-      meta_address: metaAddress,
-      endpoint_url: endpointUrl,
-      method,
-      description,
-      price_usdc: priceUsdc,
-      category,
-    });
-  }
-
-  async gateListByPocket(
-    pocketId: string,
-    metaAddress: string,
-  ): Promise<{
-    success: boolean;
-    pocket_id: string;
-    endpoints: Array<{
-      id: string;
-      endpoint_url: string;
-      method: string;
-      description: string;
-      price_usdc: number;
-      category: string;
-      status: string;
-      created_at: number;
-    }>;
-    count: number;
-  }> {
-    return this.request('GET', `/pocket/${pocketId}/gate/endpoints?meta_address=${encodeURIComponent(metaAddress)}`);
-  }
-
-  async gateDelete(
-    pocketId: string,
-    metaAddress: string,
-    endpointUrl: string,
-  ): Promise<{
-    success: boolean;
-    message: string;
-  }> {
-    return this.request('DELETE', `/pocket/${pocketId}/gate/endpoint`, {
-      meta_address: metaAddress,
-      endpoint_url: endpointUrl,
     });
   }
 

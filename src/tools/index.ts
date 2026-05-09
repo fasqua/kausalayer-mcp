@@ -62,3 +62,8 @@ export { saveMazePreferencesTool, handleSaveMazePreferences } from './save-maze-
 
 // KausaPay - x402/MPP Payment
 export { kausaPayTool, handleKausaPay } from './kausa-pay';
+
+// KausaGate - API Monetization
+export { kausaGateRegisterTool, handleKausaGateRegister } from './kausa-gate-register';
+export { kausaGateListTool, handleKausaGateList } from './kausa-gate-list';
+export { kausaGateRemoveTool, handleKausaGateRemove } from './kausa-gate-remove';
