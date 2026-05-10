@@ -766,3 +766,152 @@ export interface GetMazePreferencesResult {
 export interface SaveMazePreferencesResult {
   success: boolean;
 }
+
+// ============ KAUSALINK (Send Links) ============
+
+// Params
+export interface CreateSendLinkParams {
+  pocket_id: string;
+  amount_sol: number;
+  label?: string;
+}
+
+export interface GetSendLinkInfoParams {
+  link_id: string;
+  secret: string;
+}
+
+export interface ClaimSendLinkParams {
+  link_id: string;
+  secret: string;
+  wallet_address: string;
+  signature: string;
+  message: string;
+}
+
+export interface ListSendLinksParams {}
+
+// Results
+export interface SendLinkEntry {
+  id: string;
+  amount_sol: number;
+  label: string | null;
+  status: string;
+  created_at: string;
+  expires_at: string;
+  claimed_at: string | null;
+  link_url: string | null;
+}
+
+export interface CreateSendLinkResult {
+  link_id: string;
+  link_url: string;
+  amount_sol: number;
+  expires_at: string;
+}
+
+export interface GetSendLinkInfoResult {
+  amount_sol: number;
+  label: string | null;
+  status: string;
+  created_at: string;
+}
+
+export interface ClaimSendLinkResult {
+  success: boolean;
+  pocket_id: string | null;
+  meta_address: string | null;
+  amount_sol: number;
+  message: string;
+}
+
+export interface ListSendLinksResult {
+  links: SendLinkEntry[];
+  count: number;
+}
+
+// ============ PROOF OF PRIVACY ============
+
+// Params
+export interface GetProofOfPrivacyParams {
+  pocket_id: string;
+  route_id: string;
+}
+
+export interface DownloadProofParams {
+  pocket_id: string;
+  route_id: string;
+}
+
+export interface VerifyProofParams {
+  proof: any;
+}
+
+// Results
+export interface ProofOfPrivacy {
+  proof_id: string;
+  route_id: string;
+  route_type: string;
+  generated_at: number;
+  hop_count: number;
+  total_nodes: number;
+  total_levels: number;
+  total_transactions: number;
+  delay_pattern: string;
+  merge_strategy: string;
+  privacy_grade: string;
+  amount_range: string;
+  maze_hash: string;
+  entry_hash: string;
+  exit_hash: string;
+  route_created_at: number;
+  route_completed_at: number | null;
+  route_status: string;
+  tx_signature: string | null;
+  signature: string;
+}
+
+export interface GetProofOfPrivacyResult {
+  proof: ProofOfPrivacy | null;
+  error: string | null;
+}
+
+export interface DownloadProofResult {
+  proof: ProofOfPrivacy;
+  filename: string;
+}
+
+export interface VerifyProofResult {
+  valid: boolean;
+  proof_id: string;
+  route_type: string;
+  privacy_grade: string;
+  message: string;
+}
+
+// ============ TRANSACTION HISTORY ============
+
+// Params
+export interface GetTransactionHistoryParams {
+  tx_type?: string;
+  limit?: number;
+}
+
+// Results
+export interface HistoryEntry {
+  id: string;
+  tx_type: string;
+  status: string;
+  amount_lamports: number | null;
+  amount_display: string | null;
+  tx_signature: string | null;
+  description: string | null;
+  created_at: string;
+  completed_at: string | null;
+  has_proof: boolean;
+}
+
+export interface GetTransactionHistoryResult {
+  history: HistoryEntry[];
+  count: number;
+}

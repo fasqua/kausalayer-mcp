@@ -67,3 +67,17 @@ export { kausaPayTool, handleKausaPay } from './kausa-pay';
 export { kausaGateRegisterTool, handleKausaGateRegister } from './kausa-gate-register';
 export { kausaGateListTool, handleKausaGateList } from './kausa-gate-list';
 export { kausaGateRemoveTool, handleKausaGateRemove } from './kausa-gate-remove';
+
+// KausaLink - Send Links
+export { createSendLinkTool, handleCreateSendLink } from './create-send-link';
+export { getSendLinkInfoTool, handleGetSendLinkInfo } from './get-send-link-info';
+export { claimSendLinkTool, handleClaimSendLink } from './claim-send-link';
+export { listSendLinksTool, handleListSendLinks } from './list-send-links';
+
+// Proof of Privacy
+export { getProofOfPrivacyTool, handleGetProofOfPrivacy } from './get-proof-of-privacy';
+export { downloadProofTool, handleDownloadProof } from './download-proof';
+export { verifyProofTool, handleVerifyProof } from './verify-proof';
+
+// Transaction History
+export { getTransactionHistoryTool, handleGetTransactionHistory } from './get-transaction-history';

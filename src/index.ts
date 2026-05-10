@@ -109,6 +109,25 @@ import {
   handleKausaGateList,
   kausaGateRemoveTool,
   handleKausaGateRemove,
+  // KausaLink - Send Links
+  createSendLinkTool,
+  handleCreateSendLink,
+  getSendLinkInfoTool,
+  handleGetSendLinkInfo,
+  claimSendLinkTool,
+  handleClaimSendLink,
+  listSendLinksTool,
+  handleListSendLinks,
+  // Proof of Privacy
+  getProofOfPrivacyTool,
+  handleGetProofOfPrivacy,
+  downloadProofTool,
+  handleDownloadProof,
+  verifyProofTool,
+  handleVerifyProof,
+  // Transaction History
+  getTransactionHistoryTool,
+  handleGetTransactionHistory,
 } from './tools';
 
 // Load environment variables
@@ -182,6 +201,17 @@ const tools = [
   kausaGateRegisterTool,
   kausaGateListTool,
   kausaGateRemoveTool,
+  // KausaLink - Send Links
+  createSendLinkTool,
+  getSendLinkInfoTool,
+  claimSendLinkTool,
+  listSendLinksTool,
+  // Proof of Privacy
+  getProofOfPrivacyTool,
+  downloadProofTool,
+  verifyProofTool,
+  // Transaction History
+  getTransactionHistoryTool,
 ];
 
 // Create MCP server
@@ -377,6 +407,33 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       case 'kausa_gate_remove':
         result = await handleKausaGateRemove(args as any, authContext, apiClient, auth);
         break;
+        // KausaLink - Send Links
+        case 'create_send_link':
+          result = await handleCreateSendLink(args as any, authContext, apiClient);
+          break;
+        case 'get_send_link_info':
+          result = await handleGetSendLinkInfo(args as any, authContext, apiClient);
+          break;
+        case 'claim_send_link':
+          result = await handleClaimSendLink(args as any, authContext, apiClient);
+          break;
+        case 'list_send_links':
+          result = await handleListSendLinks(args as any, authContext, apiClient);
+          break;
+        // Proof of Privacy
+        case 'get_proof_of_privacy':
+          result = await handleGetProofOfPrivacy(args as any, authContext, apiClient);
+          break;
+        case 'download_proof':
+          result = await handleDownloadProof(args as any, authContext, apiClient);
+          break;
+        case 'verify_proof':
+          result = await handleVerifyProof(args as any, authContext, apiClient);
+          break;
+        // Transaction History
+        case 'get_transaction_history':
+          result = await handleGetTransactionHistory(args as any, authContext, apiClient);
+          break;
             default:
         return {
           content: [

@@ -707,4 +707,149 @@ export class MazeApiClient {
     });
   }
 
+
+  // ============ KAUSALINK (Send Links) ============
+
+  async createSendLink(
+    metaAddress: string,
+    pocketId: string,
+    amountSol: number,
+    label?: string,
+  ): Promise<{
+    success: boolean;
+    link_id: string;
+    link_url: string;
+    amount_lamports: number;
+    expires_at: number;
+  }> {
+    const body: any = {
+      meta_address: metaAddress,
+      pocket_id: pocketId,
+      amount_sol: amountSol,
+    };
+    if (label) body.label = label;
+    return this.request('POST', '/send-link/create', body);
+  }
+
+  async getSendLinkInfo(
+    linkId: string,
+    secret: string,
+  ): Promise<{
+    success: boolean;
+    amount_sol: number;
+    label: string | null;
+    status: string;
+    created_at: number;
+  }> {
+    return this.request('GET', `/send-link/${linkId}`, undefined, {
+      s: secret,
+    });
+  }
+
+  async claimSendLink(
+    linkId: string,
+    secret: string,
+    walletAddress: string,
+    signature: string,
+    message: string,
+  ): Promise<{
+    success: boolean;
+    pocket_id: string | null;
+    meta_address: string | null;
+    amount_sol: number;
+    message: string;
+  }> {
+    return this.request('POST', `/send-link/${linkId}/claim`, {
+      secret,
+      wallet_address: walletAddress,
+      signature,
+      message,
+    });
+  }
+
+  async listSendLinks(metaAddress: string): Promise<{
+    success: boolean;
+    links: Array<{
+      id: string;
+      amount_sol: number;
+      label: string | null;
+      status: string;
+      created_at: number;
+      expires_at: number;
+      claimed_at: number | null;
+      link_url: string | null;
+    }>;
+    count: number;
+  }> {
+    return this.request('GET', '/send-links', undefined, {
+      meta_address: metaAddress,
+    });
+  }
+
+  // ============ PROOF OF PRIVACY ============
+
+  async getProofOfPrivacy(
+    pocketId: string,
+    routeId: string,
+    metaAddress: string,
+  ): Promise<{
+    success: boolean;
+    proof: any | null;
+    error: string | null;
+  }> {
+    return this.request('GET', `/pocket/${pocketId}/proof/${routeId}`, undefined, {
+      meta_address: metaAddress,
+    });
+  }
+
+  async downloadProof(
+    pocketId: string,
+    routeId: string,
+    metaAddress: string,
+  ): Promise<any> {
+    return this.request('GET', `/pocket/${pocketId}/proof/${routeId}/download`, undefined, {
+      meta_address: metaAddress,
+    });
+  }
+
+  async verifyProof(proof: any): Promise<{
+    valid: boolean;
+    proof_id: string;
+    route_type: string;
+    privacy_grade: string;
+    message: string;
+  }> {
+    return this.request('POST', '/proof/verify', { proof });
+  }
+
+  // ============ TRANSACTION HISTORY ============
+
+  async getTransactionHistory(
+    metaAddress: string,
+    txType?: string,
+    limit: number = 50,
+  ): Promise<{
+    success: boolean;
+    history: Array<{
+      id: string;
+      tx_type: string;
+      status: string;
+      amount_lamports: number | null;
+      amount_display: string | null;
+      tx_signature: string | null;
+      description: string | null;
+      created_at: number;
+      completed_at: number | null;
+      has_proof: boolean;
+    }>;
+    count: number;
+  }> {
+    const query: Record<string, string> = {
+      meta_address: metaAddress,
+      limit: limit.toString(),
+    };
+    if (txType) query.tx_type = txType;
+    return this.request('GET', '/history', undefined, query);
+  }
+
 }
