@@ -38,7 +38,7 @@ export async function handleKausaGateList(
     description: string;
     price_usdc: number;
     category: string;
-    gateway_url: string;
+    yaml_url: string;
   }>;
   count: number;
 }> {
@@ -54,7 +54,7 @@ export async function handleKausaGateList(
     description: ep.description,
     price_usdc: ep.price_usdc,
     category: ep.category,
-    gateway_url: `https://gate.kausalayer.com/${ep.id}`,
+    yaml_url: `https://mazepocket.kausalayer.com/gate/yaml/${ep.id}`,
   }));
 
   return {

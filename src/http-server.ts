@@ -57,6 +57,72 @@ import {
   handleGetPocketTransactions,
   getTierInfoTool,
   handleGetTierInfo,
+  // Phase 3 - Batch Operations
+  sweepAllPocketsTool,
+  handleSweepAllPockets,
+  // Phase 4 - P2P Transfers
+  sendToPocketTool,
+  handleSendToPocket,
+  getP2pStatusTool,
+  handleGetP2pStatus,
+  recoverP2pTool,
+  handleRecoverP2p,
+  // Phase 4 - Swap Operations
+  swapQuoteTool,
+  handleSwapQuote,
+  swapExecuteTool,
+  handleSwapExecute,
+  getTokenBalancesTool,
+  handleGetTokenBalances,
+  // Phase 4 - Contacts
+  addContactTool,
+  handleAddContact,
+  listContactsTool,
+  handleListContacts,
+  deleteContactTool,
+  handleDeleteContact,
+  // Phase 4 - Sweep Status
+  getSweepStatusTool,
+  handleGetSweepStatus,
+  // Phase 4 - Token List & Resolve
+  getTokenListTool,
+  handleGetTokenList,
+  resolveTokenTool,
+  handleResolveToken,
+  // Phase 4 - Maze Preferences
+  getMazePreferencesTool,
+  handleGetMazePreferences,
+  saveMazePreferencesTool,
+  handleSaveMazePreferences,
+  // KausaPay
+  kausaPayTool,
+  handleKausaPay,
+  // KausaGate
+  kausaGateRegisterTool,
+  handleKausaGateRegister,
+  kausaGateListTool,
+  handleKausaGateList,
+  kausaGateRemoveTool,
+  handleKausaGateRemove,
+  // KausaLink - Send Links
+  createSendLinkTool,
+  handleCreateSendLink,
+  getSendLinkInfoTool,
+  handleGetSendLinkInfo,
+  claimSendLinkTool,
+  handleClaimSendLink,
+  listSendLinksTool,
+  handleListSendLinks,
+  // Proof of Privacy
+  getProofOfPrivacyTool,
+  handleGetProofOfPrivacy,
+  downloadProofTool,
+  handleDownloadProof,
+  verifyProofTool,
+  handleVerifyProof,
+  // Transaction History
+  getTransactionHistoryTool,
+  handleGetTransactionHistory,
 } from './tools';
 
 // Load environment
@@ -102,6 +168,45 @@ const tools = [
   getUsageStatsTool,
   getPocketTransactionsTool,
   getTierInfoTool,
+  // Phase 3 - Batch Operations
+  sweepAllPocketsTool,
+  // Phase 4 - P2P Transfers
+  sendToPocketTool,
+  getP2pStatusTool,
+  recoverP2pTool,
+  // Phase 4 - Swap Operations
+  swapQuoteTool,
+  swapExecuteTool,
+  getTokenBalancesTool,
+  // Phase 4 - Contacts
+  addContactTool,
+  listContactsTool,
+  deleteContactTool,
+  // Phase 4 - Sweep Status
+  getSweepStatusTool,
+  // Phase 4 - Token List & Resolve
+  getTokenListTool,
+  resolveTokenTool,
+  // Phase 4 - Maze Preferences
+  getMazePreferencesTool,
+  saveMazePreferencesTool,
+  // KausaPay
+  kausaPayTool,
+  // KausaGate
+  kausaGateRegisterTool,
+  kausaGateListTool,
+  kausaGateRemoveTool,
+  // KausaLink - Send Links
+  createSendLinkTool,
+  getSendLinkInfoTool,
+  claimSendLinkTool,
+  listSendLinksTool,
+  // Proof of Privacy
+  getProofOfPrivacyTool,
+  downloadProofTool,
+  verifyProofTool,
+  // Transaction History
+  getTransactionHistoryTool,
 ];
 
 // Create Express app
@@ -259,6 +364,99 @@ app.post('/call', async (req: Request, res: Response) => {
         break;
       case 'get_tier_info':
         result = await handleGetTierInfo(args, authContext, apiClient, tierManager);
+        break;
+      // Phase 3 - Batch Operations
+      case 'sweep_all_pockets':
+        result = await handleSweepAllPockets(args, authContext, apiClient, auth);
+        break;
+      // Phase 4 - P2P Transfers
+      case 'send_to_pocket':
+        result = await handleSendToPocket(args, authContext, apiClient, auth);
+        break;
+      case 'get_p2p_status':
+        result = await handleGetP2pStatus(args, authContext, apiClient);
+        break;
+      case 'recover_p2p':
+        result = await handleRecoverP2p(args, authContext, apiClient);
+        break;
+      // Phase 4 - Swap Operations
+      case 'swap_quote':
+        result = await handleSwapQuote(args, authContext, apiClient);
+        break;
+      case 'swap_execute':
+        result = await handleSwapExecute(args, authContext, apiClient, auth);
+        break;
+      case 'get_token_balances':
+        result = await handleGetTokenBalances(args, authContext, apiClient);
+        break;
+      // Phase 4 - Contacts
+      case 'add_contact':
+        result = await handleAddContact(args, authContext, apiClient);
+        break;
+      case 'list_contacts':
+        result = await handleListContacts(args, authContext, apiClient);
+        break;
+      case 'delete_contact':
+        result = await handleDeleteContact(args, authContext, apiClient);
+        break;
+      // Phase 4 - Sweep Status
+      case 'get_sweep_status':
+        result = await handleGetSweepStatus(args, authContext, apiClient);
+        break;
+      // Phase 4 - Token List & Resolve
+      case 'get_token_list':
+        result = await handleGetTokenList(args, authContext, apiClient);
+        break;
+      case 'resolve_token':
+        result = await handleResolveToken(args, authContext, apiClient);
+        break;
+      // Phase 4 - Maze Preferences
+      case 'get_maze_preferences':
+        result = await handleGetMazePreferences(args, authContext, apiClient);
+        break;
+      case 'save_maze_preferences':
+        result = await handleSaveMazePreferences(args, authContext, apiClient);
+        break;
+      // KausaPay
+      case 'kausa_pay':
+        result = await handleKausaPay(args, authContext, apiClient, auth);
+        break;
+      // KausaGate
+      case 'kausa_gate_register':
+        result = await handleKausaGateRegister(args, authContext, apiClient, auth);
+        break;
+      case 'kausa_gate_list':
+        result = await handleKausaGateList(args, authContext, apiClient, auth);
+        break;
+      case 'kausa_gate_remove':
+        result = await handleKausaGateRemove(args, authContext, apiClient, auth);
+        break;
+      // KausaLink - Send Links
+      case 'create_send_link':
+        result = await handleCreateSendLink(args, authContext, apiClient);
+        break;
+      case 'get_send_link_info':
+        result = await handleGetSendLinkInfo(args, authContext, apiClient);
+        break;
+      case 'claim_send_link':
+        result = await handleClaimSendLink(args, authContext, apiClient);
+        break;
+      case 'list_send_links':
+        result = await handleListSendLinks(args, authContext, apiClient);
+        break;
+      // Proof of Privacy
+      case 'get_proof_of_privacy':
+        result = await handleGetProofOfPrivacy(args, authContext, apiClient);
+        break;
+      case 'download_proof':
+        result = await handleDownloadProof(args, authContext, apiClient);
+        break;
+      case 'verify_proof':
+        result = await handleVerifyProof(args, authContext, apiClient);
+        break;
+      // Transaction History
+      case 'get_transaction_history':
+        result = await handleGetTransactionHistory(args, authContext, apiClient);
         break;
       default:
         return res.status(400).json({

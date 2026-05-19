@@ -9,9 +9,9 @@ import { AuthContext, ApiKeyAuth } from '../auth/api-key';
 export const kausaGateRegisterTool: Tool = {
   name: 'kausa_gate_register',
   description:
-    'Register your API endpoint to Pay.sh marketplace through KausaLayer. ' +
-    'Your identity stays hidden behind KausaLayer as the sole provider. ' +
-    'Revenue goes directly to your Maze Pocket. ' +
+    'Register your API endpoint to Pay.sh marketplace via KausaGate. ' +
+    'Generates a Pay.sh YAML spec with your endpoint URL visible (service accountability) ' +
+    'but payment recipient is your stealth pocket (financial privacy). ' +
     'Specify the endpoint URL, HTTP method, price per request in USDC, and category.',
   inputSchema: {
     type: 'object',
@@ -66,7 +66,7 @@ export async function handleKausaGateRegister(
   endpoint_id: string;
   pocket_id: string;
   pocket_address: string;
-  gateway_url: string;
+  yaml_url: string;
   error?: string;
 }> {
   const { pocket_id, endpoint_url, method = 'POST', description, price_usdc, category = 'ai_ml' } = params;
@@ -100,6 +100,6 @@ export async function handleKausaGateRegister(
     endpoint_id: response.endpoint_id || '',
     pocket_id: response.pocket_id,
     pocket_address: response.pocket_address,
-    gateway_url: `https://gate.kausalayer.com/${response.endpoint_id}`,
+    yaml_url: `https://mazepocket.kausalayer.com/gate/yaml/${response.endpoint_id}`,
   };
 }
