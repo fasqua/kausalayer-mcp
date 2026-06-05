@@ -820,6 +820,7 @@ export interface GetSendLinkInfoResult {
 export interface ClaimSendLinkResult {
   success: boolean;
   pocket_id: string | null;
+  meta_address: string | null;
   amount_sol: number;
   message: string;
 }

@@ -54,6 +54,7 @@ export async function handleClaimSendLink(
   return {
     success: response.success,
     pocket_id: response.pocket_id,
+    meta_address: response.meta_address,
     amount_sol: response.amount_sol,
     message: response.message,
   };
