@@ -30,3 +30,5 @@ Thumbs.db
 # TypeScript cache
 *.tsbuildinfo
 package-lock.json
+*.bak
+*.bak.*
