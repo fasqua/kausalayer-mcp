@@ -42,5 +42,13 @@
   },
   "engines": {
     "node": ">=18.0.0"
+  },
+  "homepage": "https://github.com/fasqua/kausalayer-mcp#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fasqua/kausalayer-mcp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/fasqua/kausalayer-mcp/issues"
   }
 }
